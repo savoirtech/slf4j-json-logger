@@ -20,12 +20,12 @@ package com.savoirtech.log.slf4j.json.logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.MDC;
 
 import java.text.Format;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -33,109 +33,101 @@ import java.util.function.Supplier;
 public abstract class AbstractJsonLogger implements JsonLogger {
   protected org.slf4j.Logger slf4jLogger;
   private FastDateFormat formatter;
-  private GsonBuilder gsonBuilder;
-
-  private Map<String, Map> maps;
-  private Map<String, Supplier<Map>> mapSuppliers;
-
-  private Map<String, List> lists;
-  private Map<String, Supplier<List>> listSupplier;
-
-  private Map<String, String> fields;
-  private Map<String, Supplier<String>> fieldSupplier;
-
-  private String message;
-  private Supplier<String> messageSupplier;
-
-  private boolean hasMaps = false;
-  private boolean hasMapSuppliers = false;
-
-  private boolean hasLists = false;
-  private boolean hasListSuppliers = false;
-
-  private boolean hasFields = false;
-  private boolean hasFieldSuppliers = false;
-
-  private boolean hasMessage = false;
-  private boolean hasMessageSupplier = false;
+  private Gson gson;
+  private JsonObject jsonObject;
 
   public AbstractJsonLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, GsonBuilder gsonBuilder) {
     this.slf4jLogger = slf4jLogger;
     this.formatter = formatter;
-    this.gsonBuilder = gsonBuilder;
+    this.gson = gsonBuilder.create();
+    jsonObject = new JsonObject();
   }
 
   @Override
   public JsonLogger message(String message) {
-    this.message = message;
-    hasMessage = true;
+    try {
+      jsonObject.add("message", gson.toJsonTree(message));
+    }
+    catch (Exception e) {
+      jsonObject.add("message", gson.toJsonTree(e.getStackTrace()));
+    }
     return this;
   }
 
   @Override
   public JsonLogger message(Supplier<String> message) {
-    this.messageSupplier = message;
-    hasMessageSupplier = true;
+    try {
+      jsonObject.add("message", gson.toJsonTree(message.get()));
+    }
+    catch (Exception e) {
+      jsonObject.add("message", gson.toJsonTree(e.getStackTrace()));
+    }
     return this;
   }
 
   @Override
   public JsonLogger map(String key, Map map) {
-    if (this.maps == null) {
-      this.maps = new HashMap<>();
+    try {
+      jsonObject.add(key, gson.toJsonTree(map));
     }
-    this.maps.put(key, map);
-    hasMaps = true;
+    catch (Exception e) {
+      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+    }
     return this;
   }
 
   @Override
   public JsonLogger map(String key, Supplier<Map> map) {
-    if (this.mapSuppliers == null) {
-      this.mapSuppliers = new HashMap<>();
+    try {
+      jsonObject.add(key, gson.toJsonTree(map.get()));
     }
-    this.mapSuppliers.put(key, map);
-    hasMapSuppliers = true;
+    catch (Exception e) {
+      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+    }
     return this;
   }
 
   @Override
   public JsonLogger list(String key, List list) {
-    if (this.lists == null) {
-      this.lists = new HashMap<>();
+    try {
+      jsonObject.add(key, gson.toJsonTree(list));
     }
-    this.lists.put(key, list);
-    hasLists = true;
+    catch (Exception e) {
+      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+    }
     return this;
   }
 
   @Override
   public JsonLogger list(String key, Supplier<List> list) {
-    if (this.listSupplier == null) {
-      this.listSupplier = new HashMap<>();
+    try {
+      jsonObject.add(key, gson.toJsonTree(list.get()));
     }
-    this.listSupplier.put(key, list);
-    hasListSuppliers = true;
+    catch (Exception e) {
+      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+    }
     return this;
   }
 
   @Override
   public JsonLogger field(String key, String value) {
-    if (this.fields == null) {
-      this.fields = new HashMap<>();
+    try {
+      jsonObject.add(key, gson.toJsonTree(value));
     }
-    this.fields.put(key, value);
-    hasFields = true;
+    catch (Exception e) {
+      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+    }
     return this;
   }
 
   @Override
   public JsonLogger field(String key, Supplier<String> value) {
-    if (this.fieldSupplier == null) {
-      this.fieldSupplier = new HashMap<>();
+    try {
+      jsonObject.add(key, gson.toJsonTree(value.get()));
     }
-    this.fieldSupplier.put(key, value);
-    hasFieldSuppliers = true;
+    catch (Exception e) {
+      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+    }
     return this;
   }
 
@@ -143,87 +135,27 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   public abstract void log();
 
   protected String formatMessage(String level) {
-    Map<String, Object> jsonMessage = new HashMap<>();
 
-    jsonMessage.put("level", level);
+    jsonObject.add("level", gson.toJsonTree(level));
 
     try {
-      jsonMessage.put("timestamp", getCurrentTimestamp(formatter));
+      jsonObject.add("timestamp", gson.toJsonTree(getCurrentTimestamp(formatter)));
     }
     catch (Exception e) {
-      jsonMessage.put("timestamp", e);
-    }
-
-    if (hasMessage) {
-      jsonMessage.put("message", message);
-    }
-    else if (hasMessageSupplier) {
-      try {
-        jsonMessage.put("message", messageSupplier.get());
-      }
-      catch (Exception e) {
-        jsonMessage.put("message", e);
-      }
-    }
-
-    if (hasFields) {
-      for (Map.Entry<String, String> entry : fields.entrySet()) {
-        jsonMessage.put(entry.getKey(), entry.getValue());
-      }
-    }
-
-    if (hasFieldSuppliers) {
-      for (Map.Entry<String, Supplier<String>> entry : fieldSupplier.entrySet()) {
-        try {
-          jsonMessage.put(entry.getKey(), entry.getValue().get());
-        }
-        catch (Exception e) {
-          jsonMessage.put(entry.getKey(), e);
-        }
-      }
-    }
-
-    if (hasMaps) {
-      for (Map.Entry<String, Map> entry : maps.entrySet()) {
-        jsonMessage.put(entry.getKey(), entry.getValue());
-      }
-    }
-
-    if (hasMapSuppliers) {
-      for (Map.Entry<String, Supplier<Map>> entry : mapSuppliers.entrySet()) {
-        try {
-          jsonMessage.put(entry.getKey(), entry.getValue().get());
-        }
-        catch (Exception e) {
-          jsonMessage.put(entry.getKey(), e);
-        }
-      }
-    }
-
-    if (hasLists) {
-      for (Map.Entry<String, List> entry : lists.entrySet()) {
-        jsonMessage.put(entry.getKey(), entry.getValue());
-      }
-    }
-
-    if (hasListSuppliers) {
-      for (Map.Entry<String, Supplier<List>> entry : listSupplier.entrySet()) {
-        try {
-          jsonMessage.put(entry.getKey(), entry.getValue().get());
-        }
-        catch (Exception e) {
-          jsonMessage.put(entry.getKey(), e);
-        }
-      }
+      jsonObject.add("timestamp", gson.toJsonTree(e.getStackTrace()));
     }
 
     Map mdc = MDC.getCopyOfContextMap();
     if (mdc != null && !mdc.isEmpty()) {
-      jsonMessage.put("MDC", MDC.getCopyOfContextMap());
+      try {
+        jsonObject.add("MDC", gson.toJsonTree(MDC.getCopyOfContextMap()));
+      }
+      catch (Exception e) {
+        jsonObject.add("MDC", gson.toJsonTree(e.getStackTrace()));
+      }
     }
 
-    Gson gson = gsonBuilder.create();
-    return gson.toJson(jsonMessage);
+    return gson.toJson(jsonObject);
   }
 
   private String getCurrentTimestamp(Format formatter) {

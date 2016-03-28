@@ -32,12 +32,7 @@ public class WarnLogger extends AbstractJsonLogger {
 
   @Override
   public void log() {
-    try {
-      slf4jLogger.warn(formatMessage(LOG_LEVEL));
-    }
-    catch (Exception e) {
-      slf4jLogger.warn("{\"" + e + "\"}");
-    }
+    slf4jLogger.warn(formatMessage(LOG_LEVEL));
   }
 
   public String toString() {

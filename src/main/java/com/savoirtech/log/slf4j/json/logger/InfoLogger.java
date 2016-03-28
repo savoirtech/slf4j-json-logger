@@ -32,12 +32,7 @@ public class InfoLogger extends AbstractJsonLogger {
 
   @Override
   public void log() {
-    try {
-      slf4jLogger.info(formatMessage(LOG_LEVEL));
-    }
-    catch (Exception e) {
-      slf4jLogger.info("{\"" + e + "\"}");
-    }
+    slf4jLogger.info(formatMessage(LOG_LEVEL));
   }
 
   public String toString() {

@@ -32,12 +32,7 @@ public class ErrorLogger extends AbstractJsonLogger {
 
   @Override
   public void log() {
-    try {
-      slf4jLogger.error(formatMessage(LOG_LEVEL));
-    }
-    catch (Exception e) {
-      slf4jLogger.error("{\"" + e + "\"}");
-    }
+    slf4jLogger.error(formatMessage(LOG_LEVEL));
   }
 
   public String toString() {
