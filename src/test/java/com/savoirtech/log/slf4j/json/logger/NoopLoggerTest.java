@@ -18,6 +18,8 @@
 
 package com.savoirtech.log.slf4j.json.logger;
 
+import com.google.gson.JsonObject;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,16 +41,6 @@ public class NoopLoggerTest {
   @Before
   public void setupTest() throws Exception {
     this.logger = new NoopLogger();
-  }
-
-  @Test
-  public void testCategory() throws Exception {
-    this.logger.category("x-category-x").log();
-  }
-
-  @Test
-  public void testCategorySupplier() throws Exception {
-    this.logger.category(() -> { throw new RuntimeException("unexpected execution"); }).log();
   }
 
   @Test
@@ -98,6 +90,30 @@ public class NoopLoggerTest {
     this.logger.field("x-field-key-x", () -> {
       throw new RuntimeException("unexpected execution");
     }).log();
+  }
+
+  @Test
+  public void testJson() {
+    this.logger.json("x-field-key-x", new JsonObject()).log();
+  }
+
+  @Test
+  public void testJsonSupplier() {
+    this.logger.json("x-field-key-x", () -> {
+      throw new RuntimeException("unexpected execution");
+    });
+  }
+
+  @Test
+  public void testJsonString() {
+    this.logger.jsonString("x-field-key-x", "x-field-value-x");
+  }
+
+  @Test
+  public void testJsonStringProvider() {
+    this.logger.jsonString("x-field-key-x", () -> {
+      throw new RuntimeException("unexpected execution");
+    });
   }
 
   @Test

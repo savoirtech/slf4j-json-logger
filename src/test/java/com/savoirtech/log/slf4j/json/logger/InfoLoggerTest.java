@@ -18,6 +18,8 @@
 
 package com.savoirtech.log.slf4j.json.logger;
 
+import com.google.gson.GsonBuilder;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -38,12 +40,15 @@ public class InfoLoggerTest {
 
   private org.slf4j.Logger slf4jLogger;
 
+  private GsonBuilder gsonBuilder;
+
   @Before
   public void setupTest() throws Exception {
     this.testMessage = "x-test-formatted-message-x";
     this.slf4jLogger = Mockito.mock(org.slf4j.Logger.class);
+    this.gsonBuilder = new GsonBuilder().disableHtmlEscaping();
 
-    this.logger = new InfoLogger(slf4jLogger, null, null) {
+    this.logger = new InfoLogger(slf4jLogger, null, gsonBuilder) {
       @Override
       protected String formatMessage(String level) {
         if (level.equals(InfoLogger.LOG_LEVEL)) {
@@ -60,17 +65,6 @@ public class InfoLoggerTest {
     this.logger.log();
 
     Mockito.verify(slf4jLogger).info(this.testMessage);
-  }
-
-  @Test
-  public void testLogException() throws Exception {
-    RuntimeException rtExc = new RuntimeException("x-rt-exc-x");
-
-    Mockito.doThrow(rtExc).when(this.slf4jLogger).info(this.testMessage);
-
-    this.logger.log();
-
-    Mockito.verify(slf4jLogger).info("{\"" + rtExc + "\"}");
   }
 
   @Test

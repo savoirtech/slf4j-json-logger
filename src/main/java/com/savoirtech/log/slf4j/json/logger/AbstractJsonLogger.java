@@ -20,6 +20,7 @@ package com.savoirtech.log.slf4j.json.logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.apache.commons.lang3.time.FastDateFormat;
@@ -124,6 +125,50 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   public JsonLogger field(String key, Supplier<String> value) {
     try {
       jsonObject.add(key, gson.toJsonTree(value.get()));
+    }
+    catch (Exception e) {
+      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+    }
+    return this;
+  }
+
+  @Override
+  public JsonLogger json(String key, JsonElement jsonElement) {
+    try {
+      jsonObject.add(key, jsonElement);
+    }
+    catch (Exception e) {
+      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+    }
+    return this;
+  }
+
+  @Override
+  public JsonLogger json(String key, Supplier<JsonElement> jsonElement) {
+    try {
+      jsonObject.add(key, jsonElement.get());
+    }
+    catch (Exception e) {
+      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+    }
+    return this;
+  }
+
+  @Override
+  public JsonLogger jsonString(String key, String jsonString) {
+    try {
+      jsonObject.add(key, gson.toJsonTree(jsonString));
+    }
+    catch (Exception e) {
+      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+    }
+    return this;
+  }
+
+  @Override
+  public JsonLogger jsonString(String key, Supplier<String> jsonString) {
+    try {
+      jsonObject.add(key, gson.toJsonTree(jsonString.get()));
     }
     catch (Exception e) {
       jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));

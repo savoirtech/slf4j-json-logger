@@ -18,6 +18,8 @@
 
 package com.savoirtech.log.slf4j.json.logger;
 
+import com.google.gson.JsonElement;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -63,6 +65,12 @@ public interface JsonLogger {
    * Add a top level field as a lambda or supplier that is lazily evaluated only if the message is logged
    */
   JsonLogger field(String key, Supplier<String> value);
+
+  JsonLogger json(String key, JsonElement jsonElement);
+  JsonLogger json(String key, Supplier<JsonElement> jsonElement);
+
+  JsonLogger jsonString(String key, String jsonString);
+  JsonLogger jsonString(String key, Supplier<String> jsonString);
 
   /**
    * Log the formatted message

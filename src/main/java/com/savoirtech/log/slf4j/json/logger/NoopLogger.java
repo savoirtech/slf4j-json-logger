@@ -18,6 +18,8 @@
 
 package com.savoirtech.log.slf4j.json.logger;
 
+import com.google.gson.JsonElement;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -61,6 +63,26 @@ public class NoopLogger implements JsonLogger {
 
   @Override
   public JsonLogger field(String key, Supplier<String> value) {
+    return this;
+  }
+
+  @Override
+  public JsonLogger json(String key, JsonElement jsonElement) {
+    return this;
+  }
+
+  @Override
+  public JsonLogger json(String key, Supplier<JsonElement> jsonElement) {
+    return this;
+  }
+
+  @Override
+  public JsonLogger jsonString(String key, String jsonString) {
+    return this;
+  }
+
+  @Override
+  public JsonLogger jsonString(String key, Supplier<String> jsonString) {
     return this;
   }
 
