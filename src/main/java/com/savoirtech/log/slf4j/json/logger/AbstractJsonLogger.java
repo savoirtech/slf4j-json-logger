@@ -19,7 +19,6 @@
 package com.savoirtech.log.slf4j.json.logger;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -27,6 +26,8 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.MDC;
 
 import java.text.Format;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -37,10 +38,10 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   private Gson gson;
   private JsonObject jsonObject;
 
-  public AbstractJsonLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, GsonBuilder gsonBuilder) {
+  public AbstractJsonLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson) {
     this.slf4jLogger = slf4jLogger;
     this.formatter = formatter;
-    this.gson = gsonBuilder.create();
+    this.gson = gson;
     jsonObject = new JsonObject();
   }
 
@@ -50,7 +51,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
       jsonObject.add("message", gson.toJsonTree(message));
     }
     catch (Exception e) {
-      jsonObject.add("message", gson.toJsonTree(e.getStackTrace()));
+      jsonObject.add("message", gson.toJsonTree(formatException(e)));
     }
     return this;
   }
@@ -61,7 +62,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
       jsonObject.add("message", gson.toJsonTree(message.get()));
     }
     catch (Exception e) {
-      jsonObject.add("message", gson.toJsonTree(e.getStackTrace()));
+      jsonObject.add("message", gson.toJsonTree(formatException(e)));
     }
     return this;
   }
@@ -72,7 +73,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
       jsonObject.add(key, gson.toJsonTree(map));
     }
     catch (Exception e) {
-      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+      jsonObject.add(key, gson.toJsonTree(formatException(e)));
     }
     return this;
   }
@@ -83,7 +84,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
       jsonObject.add(key, gson.toJsonTree(map.get()));
     }
     catch (Exception e) {
-      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+      jsonObject.add(key, gson.toJsonTree(formatException(e)));
     }
     return this;
   }
@@ -94,7 +95,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
       jsonObject.add(key, gson.toJsonTree(list));
     }
     catch (Exception e) {
-      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+      jsonObject.add(key, gson.toJsonTree(formatException(e)));
     }
     return this;
   }
@@ -105,7 +106,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
       jsonObject.add(key, gson.toJsonTree(list.get()));
     }
     catch (Exception e) {
-      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+      jsonObject.add(key, gson.toJsonTree(formatException(e)));
     }
     return this;
   }
@@ -116,7 +117,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
       jsonObject.add(key, gson.toJsonTree(value));
     }
     catch (Exception e) {
-      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+      jsonObject.add(key, gson.toJsonTree(formatException(e)));
     }
     return this;
   }
@@ -127,7 +128,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
       jsonObject.add(key, gson.toJsonTree(value.get()));
     }
     catch (Exception e) {
-      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+      jsonObject.add(key, gson.toJsonTree(formatException(e)));
     }
     return this;
   }
@@ -138,7 +139,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
       jsonObject.add(key, jsonElement);
     }
     catch (Exception e) {
-      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+      jsonObject.add(key, gson.toJsonTree(formatException(e)));
     }
     return this;
   }
@@ -149,29 +150,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
       jsonObject.add(key, jsonElement.get());
     }
     catch (Exception e) {
-      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
-    }
-    return this;
-  }
-
-  @Override
-  public JsonLogger jsonString(String key, String jsonString) {
-    try {
-      jsonObject.add(key, gson.toJsonTree(jsonString));
-    }
-    catch (Exception e) {
-      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
-    }
-    return this;
-  }
-
-  @Override
-  public JsonLogger jsonString(String key, Supplier<String> jsonString) {
-    try {
-      jsonObject.add(key, gson.toJsonTree(jsonString.get()));
-    }
-    catch (Exception e) {
-      jsonObject.add(key, gson.toJsonTree(e.getStackTrace()));
+      jsonObject.add(key, gson.toJsonTree(formatException(e)));
     }
     return this;
   }
@@ -187,7 +166,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
       jsonObject.add("timestamp", gson.toJsonTree(getCurrentTimestamp(formatter)));
     }
     catch (Exception e) {
-      jsonObject.add("timestamp", gson.toJsonTree(e.getStackTrace()));
+      jsonObject.add("timestamp", gson.toJsonTree(formatException(e)));
     }
 
     Map mdc = MDC.getCopyOfContextMap();
@@ -196,7 +175,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
         jsonObject.add("MDC", gson.toJsonTree(MDC.getCopyOfContextMap()));
       }
       catch (Exception e) {
-        jsonObject.add("MDC", gson.toJsonTree(e.getStackTrace()));
+        jsonObject.add("MDC", gson.toJsonTree(formatException(e)));
       }
     }
 
@@ -205,5 +184,12 @@ public abstract class AbstractJsonLogger implements JsonLogger {
 
   private String getCurrentTimestamp(Format formatter) {
     return formatter.format(System.currentTimeMillis());
+  }
+
+  private List<Object> formatException(Exception e) {
+    List<Object> list = new LinkedList<>();
+    list.add(e.toString());
+    list.addAll(Arrays.asList(e.getStackTrace()));
+    return list;
   }
 }

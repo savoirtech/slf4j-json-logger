@@ -105,18 +105,6 @@ public class NoopLoggerTest {
   }
 
   @Test
-  public void testJsonString() {
-    this.logger.jsonString("x-field-key-x", "x-field-value-x");
-  }
-
-  @Test
-  public void testJsonStringProvider() {
-    this.logger.jsonString("x-field-key-x", () -> {
-      throw new RuntimeException("unexpected execution");
-    });
-  }
-
-  @Test
   public void testLog() throws Exception {
     this.logger.log();
   }

@@ -18,6 +18,7 @@
 
 package com.savoirtech.log.slf4j.json.logger;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.apache.commons.lang3.time.FastDateFormat;
@@ -28,7 +29,7 @@ import org.apache.commons.lang3.time.FastDateFormat;
 public class Logger {
   private org.slf4j.Logger slf4jLogger;
 
-  private GsonBuilder gsonBuilder = new GsonBuilder().disableHtmlEscaping();
+  private Gson gson = new GsonBuilder().disableHtmlEscaping().create();
   private FastDateFormat formatter;
 
   private NoopLogger noopLogger = new NoopLogger();
@@ -40,7 +41,7 @@ public class Logger {
 
   public JsonLogger trace() {
     if (slf4jLogger.isTraceEnabled()) {
-      return new TraceLogger(slf4jLogger, formatter, gsonBuilder);
+      return new TraceLogger(slf4jLogger, formatter, gson);
     }
 
     return noopLogger;
@@ -48,7 +49,7 @@ public class Logger {
 
   public JsonLogger debug() {
     if (slf4jLogger.isDebugEnabled()) {
-      return new DebugLogger(slf4jLogger, formatter, gsonBuilder);
+      return new DebugLogger(slf4jLogger, formatter, gson);
     }
 
     return noopLogger;
@@ -56,7 +57,7 @@ public class Logger {
 
   public JsonLogger info() {
     if (slf4jLogger.isInfoEnabled()) {
-      return new InfoLogger(slf4jLogger, formatter, gsonBuilder);
+      return new InfoLogger(slf4jLogger, formatter, gson);
     }
 
     return noopLogger;
@@ -64,7 +65,7 @@ public class Logger {
 
   public JsonLogger warn() {
     if (slf4jLogger.isWarnEnabled()) {
-      return new WarnLogger(slf4jLogger, formatter, gsonBuilder);
+      return new WarnLogger(slf4jLogger, formatter, gson);
     }
 
     return noopLogger;
@@ -72,7 +73,7 @@ public class Logger {
 
   public JsonLogger error() {
     if (slf4jLogger.isErrorEnabled()) {
-      return new ErrorLogger(slf4jLogger, formatter, gsonBuilder);
+      return new ErrorLogger(slf4jLogger, formatter, gson);
     }
 
     return noopLogger;

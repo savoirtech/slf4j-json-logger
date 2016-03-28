@@ -66,11 +66,15 @@ public interface JsonLogger {
    */
   JsonLogger field(String key, Supplier<String> value);
 
+  /**
+   * Add an arbitrary JsonElement object to the top level with the given key.
+   */
   JsonLogger json(String key, JsonElement jsonElement);
-  JsonLogger json(String key, Supplier<JsonElement> jsonElement);
 
-  JsonLogger jsonString(String key, String jsonString);
-  JsonLogger jsonString(String key, Supplier<String> jsonString);
+  /**
+   * Add an arbitrary JsonElement object to the top level with the given key that is lazily evaluated only if the message is logged
+   */
+  JsonLogger json(String key, Supplier<JsonElement> jsonElement);
 
   /**
    * Log the formatted message

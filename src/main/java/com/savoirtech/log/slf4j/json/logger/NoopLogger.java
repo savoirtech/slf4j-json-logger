@@ -77,16 +77,6 @@ public class NoopLogger implements JsonLogger {
   }
 
   @Override
-  public JsonLogger jsonString(String key, String jsonString) {
-    return this;
-  }
-
-  @Override
-  public JsonLogger jsonString(String key, Supplier<String> jsonString) {
-    return this;
-  }
-
-  @Override
   public void log() {
 
   }

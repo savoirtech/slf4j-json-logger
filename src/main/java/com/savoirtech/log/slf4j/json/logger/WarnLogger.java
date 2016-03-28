@@ -18,7 +18,7 @@
 
 package com.savoirtech.log.slf4j.json.logger;
 
-import com.google.gson.GsonBuilder;
+import com.google.gson.Gson;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 
@@ -26,8 +26,8 @@ public class WarnLogger extends AbstractJsonLogger {
 
   public static final String LOG_LEVEL = "WARN";
 
-  public WarnLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, GsonBuilder gsonBuilder) {
-    super(slf4jLogger, formatter, gsonBuilder);
+  public WarnLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson) {
+    super(slf4jLogger, formatter, gson);
   }
 
   @Override
