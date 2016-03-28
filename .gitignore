@@ -1,0 +1,12 @@
+# IDEA Files
+.idea
+*.iml
+
+# Maven Files
+pom.xml.versionsBackup
+target
+
+# Eclipse Files
+.settings
+.project
+.classpath
