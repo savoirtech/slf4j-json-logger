@@ -51,16 +51,16 @@ public class BasicLoggingTests {
   }
 
   @Test
-  public void categoryEnabled() {
+  public void messageEnabled() {
     String expectedLevelElement = "\"level\":\"INFO\"";
-    String expectedMessageElement = "\"category\":\"My category\"";
+    String expectedMessageElement = "\"message\":\"My message\"";
 
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isInfoEnabled()).thenReturn(true);
 
     Logger logger = new Logger(slf4jLogger, formatter);
 
-    logger.info().category("My category").log();
+    logger.info().message("My message").log();
 
     ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
 
@@ -75,13 +75,13 @@ public class BasicLoggingTests {
   }
 
   @Test
-  public void categoryDisabled() {
+  public void messageDisabled() {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isDebugEnabled()).thenReturn(false);
 
     Logger logger = new Logger(slf4jLogger, formatter);
 
-    logger.info().category("My category").log();
+    logger.info().message("My message").log();
 
     verify(slf4jLogger, times(0)).debug(anyString());
   }
@@ -89,7 +89,6 @@ public class BasicLoggingTests {
   @Test
   public void allCollections() {
     String expectedLevelElement = "\"level\":\"TRACE\"";
-    String expectedCategoryElement = "\"category\":\"My category\"";
     String expectedMessageElement = "\"message\":\"Report executed\"";
     String expectedMapElement = "\"someStats\":{\"numberSold\":\"0\"}";
     String expectedListElement = "\"customers\":[\"Acme\",\"Sun\"]";
@@ -108,7 +107,6 @@ public class BasicLoggingTests {
     list.add("Sun");
 
     logger.trace()
-        .category("My category")
         .message("Report executed")
         .map("someStats", map)
         .list("customers", list)
@@ -122,7 +120,6 @@ public class BasicLoggingTests {
     String actualMessage = messageCaptor.getValue();
 
     assert(actualMessage.contains(expectedLevelElement));
-    assert(actualMessage.contains(expectedCategoryElement));
     assert(actualMessage.contains(expectedMessageElement));
     assert(actualMessage.contains(expectedMapElement));
     assert(actualMessage.contains(expectedListElement));
@@ -133,8 +130,8 @@ public class BasicLoggingTests {
 
   @Test
   public void fieldOverwritesCategory() {
-    String unexpectedMessageElement = "\"category\":\"This gets overwritten\"";
-    String expectedMessageElement = "\"category\":\"This wins\"";
+    String unexpectedMessageElement = "\"message\":\"This gets overwritten\"";
+    String expectedMessageElement = "\"message\":\"This wins\"";
 
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isWarnEnabled()).thenReturn(true);
@@ -142,8 +139,8 @@ public class BasicLoggingTests {
     Logger logger = new Logger(slf4jLogger, formatter);
 
     logger.warn()
-        .category("This gets overwritten")
-        .field("category", "This wins")
+        .message("This gets overwritten")
+        .field("message", "This wins")
         .log();
 
     ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
@@ -163,7 +160,7 @@ public class BasicLoggingTests {
 
   @Test
   public void lambdas() {
-    String expectedCategoryElement = "\"category\":\"Something expensive\"";
+    String expectedCategoryElement = "\"message\":\"Something expensive\"";
 
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isErrorEnabled()).thenReturn(true);
@@ -171,7 +168,7 @@ public class BasicLoggingTests {
     Logger logger = new Logger(slf4jLogger, formatter);
 
     logger.error()
-        .category(() -> "Something expensive")
+        .message(() -> "Something expensive")
         .log();
 
     ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);

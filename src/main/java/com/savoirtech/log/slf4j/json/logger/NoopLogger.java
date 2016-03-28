@@ -25,16 +25,6 @@ import java.util.function.Supplier;
 public class NoopLogger implements JsonLogger {
 
   @Override
-  public JsonLogger category(String category) {
-    return this;
-  }
-
-  @Override
-  public JsonLogger category(Supplier<String> category) {
-    return this;
-  }
-
-  @Override
   public JsonLogger map(String key, Map map) {
     return this;
   }

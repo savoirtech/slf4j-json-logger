@@ -63,7 +63,7 @@ public class MultiThreadedTests {
     @Override
     public void run() {
       for (int i = 0; i < iterationsPerThread; i++) {
-        logger.info().category(Thread.currentThread().getName()).message("Message #: " + i).log();
+        logger.info().message(Thread.currentThread().getName()).message("Message #: " + i).log();
       }
     }
   }

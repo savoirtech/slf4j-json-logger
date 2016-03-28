@@ -25,16 +25,6 @@ import java.util.function.Supplier;
 public interface JsonLogger {
 
   /**
-   * Set top level category field
-   */
-  JsonLogger category(String category);
-
-  /**
-   * Set top level category field as a lambda or supplier that is lazily evaluated only if the message is logged
-   */
-  JsonLogger category(Supplier<String> category);
-
-  /**
    * Set top level message field
    */
   JsonLogger message(String message);

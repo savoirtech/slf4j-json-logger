@@ -35,9 +35,6 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   private FastDateFormat formatter;
   private GsonBuilder gsonBuilder;
 
-  private String category;
-  private Supplier<String> categorySupplier;
-
   private Map<String, Map> maps;
   private Map<String, Supplier<Map>> mapSuppliers;
 
@@ -49,9 +46,6 @@ public abstract class AbstractJsonLogger implements JsonLogger {
 
   private String message;
   private Supplier<String> messageSupplier;
-
-  private boolean hasCategory = false;
-  private boolean hasCategorySupplier = false;
 
   private boolean hasMaps = false;
   private boolean hasMapSuppliers = false;
@@ -69,20 +63,6 @@ public abstract class AbstractJsonLogger implements JsonLogger {
     this.slf4jLogger = slf4jLogger;
     this.formatter = formatter;
     this.gsonBuilder = gsonBuilder;
-  }
-
-  @Override
-  public JsonLogger category(String category) {
-    this.category = category;
-    hasCategory = true;
-    return this;
-  }
-
-  @Override
-  public JsonLogger category(Supplier<String> category) {
-    this.categorySupplier = category;
-    hasCategorySupplier = true;
-    return this;
   }
 
   @Override
@@ -172,18 +152,6 @@ public abstract class AbstractJsonLogger implements JsonLogger {
     }
     catch (Exception e) {
       jsonMessage.put("timestamp", e);
-    }
-
-    if (hasCategory) {
-      jsonMessage.put("category", category);
-    }
-    else if (hasCategorySupplier) {
-      try {
-        jsonMessage.put("category", categorySupplier.get());
-      }
-      catch (Exception e) {
-        jsonMessage.put("category", e);
-      }
     }
 
     if (hasMessage) {
