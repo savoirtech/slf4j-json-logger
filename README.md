@@ -56,7 +56,7 @@ import com.savoirtech.logging.slf4j.json.LoggerFactory;
        .field("year", "2016")
        .log();
 
-{"message":"Report executed","someStats":{"numberSold":"0"},"customers":["Acme","Sun"],"year":"2016","level":"INFO","timestamp":"2016-03-29 12:55:50.945-0400"}
+{"message":"Report executed","someStats":{"numberSold":"0"},"customers":["Acme","Sun"],"year":"2016","level":"TRACE","timestamp":"2016-03-29 12:55:50.945-0400"}
 ````
 - Gson is used to serialize objects.  The collections and objects passed in can be arbitrarily complex and/or custom.
 - This library supports lambdas in order to lazily evaluate the logged objects and only evaluate if the log level is enabled.  Should be used when the log information is expensive to generate.
