@@ -42,6 +42,13 @@ import com.savoirtech.logging.slf4j.json.LoggerFactory;
 ````
 - With collections:
 ````
+   Map<String, String> map = new HashMap<>();
+   map.put("numberSold", "0");
+
+   List<String> list = new ArrayList<>();
+   list.add("Acme");
+   list.add("Sun");
+
    logger.trace()
        .message("Report executed")
        .map("someStats", map)
@@ -58,4 +65,4 @@ import com.savoirtech.logging.slf4j.json.LoggerFactory;
        .message(() -> "Something expensive")
        .log();
 ````
-- .message() is a convenience method for .field("message", <your message>)
+- .message() is a convenience method for .field("message", "your message")
