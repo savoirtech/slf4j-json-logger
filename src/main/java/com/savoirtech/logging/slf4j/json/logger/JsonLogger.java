@@ -77,6 +77,12 @@ public interface JsonLogger {
   JsonLogger json(String key, Supplier<JsonElement> jsonElement);
 
   /**
+   * Add an exception to the JSON hierarchy.  The exception will be formatted to include the message and the stacktrace
+   * similar to how it is outputted using exception.printStackTrace()
+   */
+  JsonLogger exception(String key, Exception exception);
+
+  /**
    * Log the formatted message
    */
   void log();

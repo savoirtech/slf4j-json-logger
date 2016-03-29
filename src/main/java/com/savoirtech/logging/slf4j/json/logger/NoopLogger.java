@@ -77,6 +77,11 @@ public class NoopLogger implements JsonLogger {
   }
 
   @Override
+  public JsonLogger exception(String key, Exception exception) {
+    return this;
+  }
+
+  @Override
   public void log() {
 
   }

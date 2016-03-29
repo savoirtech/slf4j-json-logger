@@ -105,6 +105,11 @@ public class NoopLoggerTest {
   }
 
   @Test
+  public void testException() {
+    this.logger.exception("x-map-key-x", new RuntimeException("Not logged"));
+  }
+
+  @Test
   public void testLog() throws Exception {
     this.logger.log();
   }

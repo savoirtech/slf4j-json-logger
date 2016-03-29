@@ -154,11 +154,6 @@ public class BasicLoggingTests {
   }
 
   @Test
-  public void noExceptionThrown() {
-
-  }
-
-  @Test
   public void lambdas() {
     String expectedCategoryElement = "\"message\":\"Something expensive\"";
 

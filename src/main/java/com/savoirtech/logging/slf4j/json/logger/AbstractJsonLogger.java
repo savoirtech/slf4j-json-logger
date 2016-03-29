@@ -156,6 +156,17 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   }
 
   @Override
+  public JsonLogger exception(String key, Exception exception) {
+    try {
+      jsonObject.add(key, gson.toJsonTree(formatException(exception)));
+    }
+    catch (Exception e) {
+      jsonObject.add(key, gson.toJsonTree(formatException(e)));
+    }
+    return this;
+  }
+
+  @Override
   public abstract void log();
 
   protected String formatMessage(String level) {

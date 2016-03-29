@@ -82,3 +82,11 @@ to not set a field, map or list at this key as it will be overwritten.
 
 {"message":"Service trace","someStats":{"persistenceTime":"30000","TTL":"90000"},"level":"INFO","timestamp":"2016-03-29 13:23:37.906-0400","MDC":{"caller":"127.0.0.1"}}
 ````
+- Exceptions will be formatted with the exception.toString() + exception.getStackTrace() combined into the JSON object.
+````
+    logger.error()
+        .exception("myException", new RuntimeException("Something bad"))
+        .log();
+
+{"myException":["java.lang.RuntimeException: Something bad",{"declaringClass":"com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests","methodName":"itWorks","fileName":"BasicLoggingTests.java","lineNumber":52} ...
+````

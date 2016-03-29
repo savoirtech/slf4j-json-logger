@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.apache.log4j.MDC;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -110,5 +111,19 @@ public class AbstractJsonLoggerTests {
     JsonElement jsonElement = gson.toJsonTree(new String[]{"value1", "value2"});
     logger.json("json", () -> jsonElement).log();
     assert(logMessage.contains("\"json\":[\"value1\",\"value2\"]"));
+  }
+
+  @Test
+  public void exception() {
+    logger.exception("myException", new RuntimeException("Something bad")).log();
+    assert(logMessage.contains("\"myException\":[\"java.lang.RuntimeException: Something bad\""));
+  }
+
+  @Test
+  public void MDC() {
+    MDC.put("myMDC", "someValue");
+    logger.message("message").log();
+    assert(logMessage.contains("\"MDC\":{\"myMDC\":\"someValue\"}"));
+    MDC.clear();
   }
 }
