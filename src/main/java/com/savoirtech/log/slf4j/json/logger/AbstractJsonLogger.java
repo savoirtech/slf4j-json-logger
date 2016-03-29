@@ -172,7 +172,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
     Map mdc = MDC.getCopyOfContextMap();
     if (mdc != null && !mdc.isEmpty()) {
       try {
-        jsonObject.add("MDC", gson.toJsonTree(MDC.getCopyOfContextMap()));
+        jsonObject.add("MDC", gson.toJsonTree(mdc));
       }
       catch (Exception e) {
         jsonObject.add("MDC", gson.toJsonTree(formatException(e)));
