@@ -16,10 +16,12 @@
  *
  */
 
-package com.savoirtech.log.slf4j.json.logger;
+package com.savoirtech.logging.slf4j.json.logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import com.savoirtech.logging.slf4j.json.DebugLogger;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,14 +30,14 @@ import org.mockito.Mockito;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Verify all of the operations of the TraceLogger itself.  Note this intentionally does not
+ * Verify all of the operations of the DebugLogger itself.  Note this intentionally does not
  * test any of AbstractJsonLogger.
  *
  * Created by art on 3/28/16.
  */
-public class TraceLoggerTest {
+public class DebugLoggerTest {
 
-  private TraceLogger logger;
+  private DebugLogger logger;
 
   private String testMessage;
 
@@ -49,10 +51,10 @@ public class TraceLoggerTest {
     this.slf4jLogger = Mockito.mock(org.slf4j.Logger.class);
     this.gson = new GsonBuilder().disableHtmlEscaping().create();
 
-    this.logger = new TraceLogger(slf4jLogger, null, gson) {
+    this.logger = new DebugLogger(slf4jLogger, null, gson) {
       @Override
       protected String formatMessage(String level) {
-        if (level.equals(TraceLogger.LOG_LEVEL)) {
+        if (level.equals(DebugLogger.LOG_LEVEL)) {
           return testMessage;
         } else {
           throw new RuntimeException("unexpected log level " + level);
@@ -65,7 +67,7 @@ public class TraceLoggerTest {
   public void testLog() throws Exception {
     this.logger.log();
 
-    Mockito.verify(slf4jLogger).trace(this.testMessage);
+    Mockito.verify(slf4jLogger).debug(this.testMessage);
   }
 
   @Test

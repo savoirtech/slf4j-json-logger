@@ -16,14 +16,23 @@
  *
  */
 
-package com.savoirtech.log.slf4j.json.logger;
+package com.savoirtech.logging.slf4j.json.logger;
+
+import com.savoirtech.logging.slf4j.json.DebugLogger;
+import com.savoirtech.logging.slf4j.json.ErrorLogger;
+import com.savoirtech.logging.slf4j.json.InfoLogger;
+import com.savoirtech.logging.slf4j.json.JsonLogger;
+import com.savoirtech.logging.slf4j.json.Logger;
+import com.savoirtech.logging.slf4j.json.NoopLogger;
+import com.savoirtech.logging.slf4j.json.TraceLogger;
+import com.savoirtech.logging.slf4j.json.WarnLogger;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Validate operation of the Logger.

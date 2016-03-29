@@ -1,8 +1,10 @@
-package com.savoirtech.log.slf4j.json.logger;
+package com.savoirtech.logging.slf4j.json.logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+
+import com.savoirtech.logging.slf4j.json.AbstractJsonLogger;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.Before;

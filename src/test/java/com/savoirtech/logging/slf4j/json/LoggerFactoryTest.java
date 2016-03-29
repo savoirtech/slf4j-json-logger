@@ -16,18 +16,16 @@
  *
  */
 
-package com.savoirtech.log.slf4j.json;
-
-import com.savoirtech.log.slf4j.json.logger.Logger;
+package com.savoirtech.logging.slf4j.json;
 
 import org.apache.commons.lang3.time.FastDateFormat;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.internal.util.reflection.Whitebox;
 
 import java.lang.reflect.Field;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Validate the operation of the logger factory.

@@ -1,22 +1,15 @@
-package com.savoirtech.log.slf4j.json.logger;
+package com.savoirtech.logging.slf4j.json.logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
+
+import com.savoirtech.logging.slf4j.json.AbstractJsonLogger;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class AbstractJsonLoggerExceptionTests {
   private AbstractJsonLogger logger;

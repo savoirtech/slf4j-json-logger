@@ -16,9 +16,10 @@
  *
  */
 
-package com.savoirtech.log.slf4j.json.logger;
+package com.savoirtech.logging.slf4j.json.logger;
 
-import com.savoirtech.log.slf4j.json.LoggerFactory;
+import com.savoirtech.logging.slf4j.json.Logger;
+import com.savoirtech.logging.slf4j.json.LoggerFactory;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.Test;

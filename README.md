@@ -33,7 +33,7 @@ Logger
 - Requires the log level as the first method called
 - Simple example:
 ````
-import com.savoirtech.log.slf4j.json.LoggerFactory;
+import com.savoirtech.logging.slf4j.json.LoggerFactory;
 
    Logger logger = LoggerFactory.getLogger(this.getClass());
    logger.info()

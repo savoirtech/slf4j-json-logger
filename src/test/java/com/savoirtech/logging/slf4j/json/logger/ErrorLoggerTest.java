@@ -16,26 +16,28 @@
  *
  */
 
-package com.savoirtech.log.slf4j.json.logger;
+package com.savoirtech.logging.slf4j.json.logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import com.savoirtech.logging.slf4j.json.ErrorLogger;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
- * Verify all of the operations of the DebugLogger itself.  Note this intentionally does not
+ * Verify all of the operations of the ErrorLogger itself.  Note this intentionally does not
  * test any of AbstractJsonLogger.
  *
  * Created by art on 3/28/16.
  */
-public class DebugLoggerTest {
+public class ErrorLoggerTest {
 
-  private DebugLogger logger;
+  private ErrorLogger logger;
 
   private String testMessage;
 
@@ -49,10 +51,10 @@ public class DebugLoggerTest {
     this.slf4jLogger = Mockito.mock(org.slf4j.Logger.class);
     this.gson = new GsonBuilder().disableHtmlEscaping().create();
 
-    this.logger = new DebugLogger(slf4jLogger, null, gson) {
+    this.logger = new ErrorLogger(slf4jLogger, null, gson) {
       @Override
       protected String formatMessage(String level) {
-        if (level.equals(DebugLogger.LOG_LEVEL)) {
+        if (level.equals(ErrorLogger.LOG_LEVEL)) {
           return testMessage;
         } else {
           throw new RuntimeException("unexpected log level " + level);
@@ -65,7 +67,7 @@ public class DebugLoggerTest {
   public void testLog() throws Exception {
     this.logger.log();
 
-    Mockito.verify(slf4jLogger).debug(this.testMessage);
+    Mockito.verify(slf4jLogger).error(this.testMessage);
   }
 
   @Test

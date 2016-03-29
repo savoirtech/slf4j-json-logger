@@ -16,23 +16,23 @@
  *
  */
 
-package com.savoirtech.log.slf4j.json.logger;
+package com.savoirtech.logging.slf4j.json;
 
 import com.google.gson.Gson;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 
-public class InfoLogger extends AbstractJsonLogger {
+public class DebugLogger extends AbstractJsonLogger {
 
-  public static final String LOG_LEVEL = "INFO";
+  public static final String LOG_LEVEL = "DEBUG";
 
-  public InfoLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson) {
+  public DebugLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson) {
     super(slf4jLogger, formatter, gson);
   }
 
   @Override
   public void log() {
-    slf4jLogger.info(formatMessage(LOG_LEVEL));
+    slf4jLogger.debug(formatMessage(LOG_LEVEL));
   }
 
   public String toString() {
