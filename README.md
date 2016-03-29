@@ -66,3 +66,19 @@ import com.savoirtech.logging.slf4j.json.LoggerFactory;
        .log();
 ````
 - .message() is a convenience method for .field("message", "your message")
+- Information placed in the MDC will be logged under a top level "MDC" key in the JSON structure.  Care should be taken
+to not set a field, map or list at this key as it will be overwritten.
+````
+    Map<String, String> map = new HashMap<>();
+    map.put("TTL", "90000");
+    map.put("persistenceTime", "30000");
+
+    MDC.put("caller", "127.0.0.1");
+
+    logger.info()
+        .message("Service trace")
+        .map("someStats", map)
+        .log();
+
+{"message":"Service trace","someStats":{"persistenceTime":"30000","TTL":"90000"},"level":"INFO","timestamp":"2016-03-29 13:23:37.906-0400","MDC":{"caller":"127.0.0.1"}}
+````
