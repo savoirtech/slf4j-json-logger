@@ -22,12 +22,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.MDC;
 
 import java.text.Format;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -197,10 +196,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
     return formatter.format(System.currentTimeMillis());
   }
 
-  private List<Object> formatException(Exception e) {
-    List<Object> list = new LinkedList<>();
-    list.add(e.toString());
-    list.addAll(Arrays.asList(e.getStackTrace()));
-    return list;
+  private String formatException(Exception e) {
+    return ExceptionUtils.getStackTrace(e);
   }
 }

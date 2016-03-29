@@ -38,30 +38,30 @@ public class AbstractJsonLoggerExceptionTests {
   @Test
   public void messageSupplier() {
     logger.message(() -> {throw new RuntimeException("Some error!");}).log();
-    assert(logMessage.contains("\"message\":[\"java.lang.RuntimeException: Some error!\""));
+    assert(logMessage.contains("\"message\":\"java.lang.RuntimeException: Some error!"));
   }
 
   @Test
   public void mapSupplier() {
     logger.map("someMap", () -> {throw new RuntimeException("Some error!");}).log();
-    assert(logMessage.contains("\"someMap\":[\"java.lang.RuntimeException: Some error!\""));
+    assert(logMessage.contains("\"someMap\":\"java.lang.RuntimeException: Some error!"));
   }
 
   @Test
   public void listSupplier() {
     logger.list("someList", () -> {throw new RuntimeException("Some error!");}).log();
-    assert(logMessage.contains("\"someList\":[\"java.lang.RuntimeException: Some error!\""));
+    assert(logMessage.contains("\"someList\":\"java.lang.RuntimeException: Some error!"));
   }
 
   @Test
   public void fieldSupplier() {
     logger.field("key", () -> {throw new RuntimeException("Some error!");}).log();
-    assert(logMessage.contains("\"key\":[\"java.lang.RuntimeException: Some error!\""));
+    assert(logMessage.contains("\"key\":\"java.lang.RuntimeException: Some error!"));
   }
 
   @Test
   public void jsonSupplier() {
     logger.json("json", () -> {throw new RuntimeException("Some error!");}).log();
-    assert(logMessage.contains("\"json\":[\"java.lang.RuntimeException: Some error!\""));
+    assert(logMessage.contains("\"json\":\"java.lang.RuntimeException: Some error!"));
   }
 }

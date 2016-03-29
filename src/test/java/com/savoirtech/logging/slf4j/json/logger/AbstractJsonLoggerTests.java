@@ -116,7 +116,7 @@ public class AbstractJsonLoggerTests {
   @Test
   public void exception() {
     logger.exception("myException", new RuntimeException("Something bad")).log();
-    assert(logMessage.contains("\"myException\":[\"java.lang.RuntimeException: Something bad\""));
+    assert(logMessage.contains("\"myException\":\"java.lang.RuntimeException: Something bad"));
   }
 
   @Test

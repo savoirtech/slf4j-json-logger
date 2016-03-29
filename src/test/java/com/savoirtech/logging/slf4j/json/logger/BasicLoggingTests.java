@@ -48,6 +48,7 @@ public class BasicLoggingTests {
     logger.info().message("It works!").log();
     logger.warn().message("It works!").log();
     logger.error().message("It works!").log();
+    logger.info().exception("myKey", new RuntimeException("blah")).log();
   }
 
   @Test
