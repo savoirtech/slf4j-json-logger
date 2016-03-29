@@ -16,7 +16,7 @@
  *
  */
 
-package com.savoirtech.logging.slf4j.json;
+package com.savoirtech.logging.slf4j.json.logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -18,6 +18,8 @@
 
 package com.savoirtech.logging.slf4j.json;
 
+import com.savoirtech.logging.slf4j.json.logger.Logger;
+
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.Test;
 import org.mockito.internal.util.reflection.Whitebox;

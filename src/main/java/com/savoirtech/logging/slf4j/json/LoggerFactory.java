@@ -18,6 +18,8 @@
 
 package com.savoirtech.logging.slf4j.json;
 
+import com.savoirtech.logging.slf4j.json.logger.Logger;
+
 import org.apache.commons.lang3.time.FastDateFormat;
 
 public class LoggerFactory {

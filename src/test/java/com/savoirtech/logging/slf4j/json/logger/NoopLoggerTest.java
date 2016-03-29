@@ -20,8 +20,6 @@ package com.savoirtech.logging.slf4j.json.logger;
 
 import com.google.gson.JsonObject;
 
-import com.savoirtech.logging.slf4j.json.NoopLogger;
-
 import org.junit.Before;
 import org.junit.Test;
 

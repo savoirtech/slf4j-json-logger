@@ -18,6 +18,8 @@
 
 package com.savoirtech.logging.slf4j.json;
 
+import com.savoirtech.logging.slf4j.json.logger.Logger;
+
 import org.junit.Ignore;
 import org.junit.Test;
 

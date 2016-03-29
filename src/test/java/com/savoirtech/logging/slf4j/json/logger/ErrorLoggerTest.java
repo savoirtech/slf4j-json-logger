@@ -21,8 +21,6 @@ package com.savoirtech.logging.slf4j.json.logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import com.savoirtech.logging.slf4j.json.ErrorLogger;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
