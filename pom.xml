@@ -30,7 +30,7 @@
   <groupId>com.savoirtech.logging</groupId>
   <artifactId>slf4j-json-logger</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.1</version>
+  <version>1.0.2-SNAPSHOT</version>
   <name>SavoirTech ::: SLF4J JSON logger</name>
 
   <description>
