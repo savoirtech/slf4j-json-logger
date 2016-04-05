@@ -17,90 +17,102 @@
   ~
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>com.savoirtech</groupId>
-    <artifactId>savoir-parent</artifactId>
-    <version>1.0.3</version>
-  </parent>
+    <parent>
+        <groupId>com.savoirtech</groupId>
+        <artifactId>savoir-parent</artifactId>
+        <version>1.0.3</version>
+    </parent>
 
-  <groupId>com.savoirtech.logging</groupId>
-  <artifactId>slf4j-json-logger</artifactId>
-  <packaging>jar</packaging>
-  <version>1.0.2-SNAPSHOT</version>
-  <name>SavoirTech ::: SLF4J JSON logger</name>
+    <groupId>com.savoirtech.logging</groupId>
+    <artifactId>slf4j-json-logger-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.2-SNAPSHOT</version>
+    <name>SavoirTech ::: SLF4J JSON logger ::: Parent</name>
 
-  <description>
-    Easy-to-use Logger generating JSON-formatted messages on top of SLF4J logging.
-  </description>
+    <description>
+        Parent for the easy-to-use Logger generating JSON-formatted messages on top of SLF4J
+        logging.
+    </description>
 
-  <scm>
-    <url>https://github.com/savoirtech/slf4j-json-logger</url>
-    <connection>scm:git:git@github.com:savoirtech/slf4j-json-logger.git</connection>
-    <developerConnection>scm:git:git@github.com:savoirtech/slf4j-json-logger.git</developerConnection>
-  </scm>
+    <modules>
+        <module>slf4j-json-logger</module>
+        <module>slf4j-json-logger-mockito</module>
+    </modules>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <gson.version>2.6.2</gson.version>
-    <slf4j.version>1.7.12</slf4j.version>
-    <commons.lang3.version>3.4</commons.lang3.version>
-    <junit.version>4.12</junit.version>
-    <mockito.version>1.10.19</mockito.version>
+    <scm>
+        <url>https://github.com/savoirtech/slf4j-json-logger</url>
+        <connection>scm:git:git@github.com:savoirtech/slf4j-json-logger.git</connection>
+        <developerConnection>scm:git:git@github.com:savoirtech/slf4j-json-logger.git
+        </developerConnection>
+    </scm>
 
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <gson.version>2.6.2</gson.version>
+        <slf4j.version>1.7.12</slf4j.version>
+        <commons.lang3.version>3.4</commons.lang3.version>
+        <junit.version>4.12</junit.version>
+        <mockito.version>1.10.19</mockito.version>
 
-  <dependencies>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
 
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>${gson.version}</version>
-    </dependency>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.savoirtech.logging</groupId>
+                <artifactId>slf4j-json-logger</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>${commons.lang3.version}</version>
-    </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
 
-    <!-- logging -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons.lang3.version}</version>
+            </dependency>
 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
+            <!-- logging -->
 
-    <!-- testing -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
+            <!-- testing -->
 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>${slf4j.version}</version>
-      <scope>test</scope>
-    </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
 
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>${mockito.version}</version>
-      <scope>test</scope>
-    </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
 
-  </dependencies>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

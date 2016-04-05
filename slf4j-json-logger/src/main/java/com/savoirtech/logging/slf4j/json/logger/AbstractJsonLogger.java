@@ -41,6 +41,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
     this.slf4jLogger = slf4jLogger;
     this.formatter = formatter;
     this.gson = gson;
+
     jsonObject = new JsonObject();
   }
 
