@@ -31,7 +31,7 @@
   <artifactId>slf4j-json-logger</artifactId>
   <packaging>jar</packaging>
 
-  <name>SavoirTech ::: SLF4J JSON logger :: Logger</name>
+  <name>SavoirTech ::: SLF4J JSON logger ::: Logger</name>
 
   <description>
     Easy-to-use Logger generating JSON-formatted messages on top of SLF4J logging.

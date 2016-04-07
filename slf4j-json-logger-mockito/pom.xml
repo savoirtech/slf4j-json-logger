@@ -31,7 +31,7 @@
   <artifactId>slf4j-json-logger-testutil</artifactId>
   <packaging>jar</packaging>
 
-  <name>SavoirTech ::: SLF4J JSON logger :: Test Util </name>
+  <name>SavoirTech ::: SLF4J JSON logger ::: Test Util </name>
 
   <description>
     Test utils for the slf4j-json-logger.
