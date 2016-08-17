@@ -36,11 +36,13 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   private FastDateFormat formatter;
   private Gson gson;
   private JsonObject jsonObject;
+  private boolean includeLoggerName;
 
-  public AbstractJsonLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson) {
+  public AbstractJsonLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson, boolean includeLoggerName) {
     this.slf4jLogger = slf4jLogger;
     this.formatter = formatter;
     this.gson = gson;
+    this.includeLoggerName = includeLoggerName;
 
     jsonObject = new JsonObject();
   }
@@ -172,6 +174,10 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   protected String formatMessage(String level) {
 
     jsonObject.add("level", gson.toJsonTree(level));
+
+    if (includeLoggerName) {
+      jsonObject.add("logger", gson.toJsonTree(slf4jLogger.getName()));
+    }
 
     try {
       jsonObject.add("timestamp", gson.toJsonTree(getCurrentTimestamp(formatter)));

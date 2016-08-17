@@ -26,7 +26,6 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import org.slf4j.MDC;
 
@@ -54,7 +53,7 @@ public class AbstractJsonLoggerTest {
     this.gson = new GsonBuilder().disableHtmlEscaping().create();
     this.formatter = FastDateFormat.getInstance(dateFormatString);
 
-    logger = new AbstractJsonLogger(slf4jLogger, formatter, gson) {
+    logger = new AbstractJsonLogger(slf4jLogger, formatter, gson, true) {
       @Override
       public void log() {
         logMessage = formatMessage("INFO");
@@ -151,30 +150,5 @@ public class AbstractJsonLoggerTest {
     logger.message("message").log();
     assert (logMessage.contains("\"MDC\":{\"myMDC\":\"someValue\""));
     MDC.clear();
-  }
-
-  private JsonElement matchesJsonElement(JsonElement expected) {
-    ArgumentMatcher<JsonElement> matcher = this.makeJsonElementMatcher(expected);
-
-    return Mockito.argThat(matcher);
-  }
-
-  private ArgumentMatcher<JsonElement> makeJsonElementMatcher(JsonElement expected) {
-    return new ArgumentMatcher<JsonElement>() {
-      @Override
-      public boolean matches(Object argument) {
-        if (argument == null) {
-          return (expected == null);
-        }
-
-        if (argument instanceof JsonElement) {
-          JsonElement actual = (JsonElement) argument;
-
-          return actual.equals(expected);
-        }
-
-        return false;
-      }
-    };
   }
 }

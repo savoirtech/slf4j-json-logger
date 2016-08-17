@@ -26,8 +26,8 @@ public class DebugLogger extends AbstractJsonLogger {
 
   public static final String LOG_LEVEL = "DEBUG";
 
-  public DebugLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson) {
-    super(slf4jLogger, formatter, gson);
+  public DebugLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson, boolean includeLoggerName) {
+    super(slf4jLogger, formatter, gson, includeLoggerName);
   }
 
   @Override

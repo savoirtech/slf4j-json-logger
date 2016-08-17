@@ -59,7 +59,7 @@ public class AbstractJsonLoggerExceptionTest {
 
     this.formatter = FastDateFormat.getInstance(dateFormatString);
 
-    logger = new AbstractJsonLogger(slf4jLogger, formatter, gson) {
+    logger = new AbstractJsonLogger(slf4jLogger, formatter, gson, true) {
       @Override
       public void log() {
         logMessage = formatMessage("INFO");

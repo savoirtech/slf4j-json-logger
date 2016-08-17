@@ -26,8 +26,8 @@ public class ErrorLogger extends AbstractJsonLogger {
 
   public static final String LOG_LEVEL = "ERROR";
 
-  public ErrorLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson) {
-    super(slf4jLogger, formatter, gson);
+  public ErrorLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson, boolean includeLoggerName) {
+    super(slf4jLogger, formatter, gson, includeLoggerName);
   }
 
   @Override

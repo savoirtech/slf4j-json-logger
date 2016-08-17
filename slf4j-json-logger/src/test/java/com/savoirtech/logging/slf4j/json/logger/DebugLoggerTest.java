@@ -49,7 +49,7 @@ public class DebugLoggerTest {
     this.slf4jLogger = Mockito.mock(org.slf4j.Logger.class);
     this.gson = new GsonBuilder().disableHtmlEscaping().create();
 
-    this.logger = new DebugLogger(slf4jLogger, null, gson) {
+    this.logger = new DebugLogger(slf4jLogger, null, gson, true) {
       @Override
       protected String formatMessage(String level) {
         if (level.equals(DebugLogger.LOG_LEVEL)) {

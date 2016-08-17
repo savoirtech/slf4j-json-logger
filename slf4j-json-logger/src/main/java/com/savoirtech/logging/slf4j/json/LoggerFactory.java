@@ -25,19 +25,24 @@ import org.apache.commons.lang3.time.FastDateFormat;
 public class LoggerFactory {
   private static String dateFormatString = "yyyy-MM-dd HH:mm:ss.SSSZ";
   private static FastDateFormat formatter = FastDateFormat.getInstance(dateFormatString);
+  private static boolean includeLoggerName = true;
 
   public static Logger getLogger(String name) {
     org.slf4j.Logger slf4jLogger = org.slf4j.LoggerFactory.getLogger(name);
-    return new Logger(slf4jLogger, formatter);
+    return new Logger(slf4jLogger, formatter, includeLoggerName);
   }
 
   public static Logger getLogger(Class<?> clazz) {
     org.slf4j.Logger slf4jLogger = org.slf4j.LoggerFactory.getLogger(clazz);
-    return new Logger(slf4jLogger, formatter);
+    return new Logger(slf4jLogger, formatter, includeLoggerName);
   }
 
   public static void setDateFormatString(String dateFormatString) {
     LoggerFactory.dateFormatString = dateFormatString;
     LoggerFactory.formatter = FastDateFormat.getInstance(dateFormatString);
+  }
+
+  public static void setIncludeLoggerName(boolean includeLoggerName) {
+    LoggerFactory.includeLoggerName = includeLoggerName;
   }
 }
