@@ -82,6 +82,9 @@ public class NoopLogger implements JsonLogger {
   }
 
   @Override
+  public JsonLogger stack() { return this; }
+
+  @Override
   public void log() {
 
   }

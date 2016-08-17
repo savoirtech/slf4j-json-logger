@@ -83,6 +83,13 @@ public interface JsonLogger {
   JsonLogger exception(String key, Exception exception);
 
   /**
+   * Include the stack dump of the current running thread in the log output.
+   * This data will be included in the output under the "stack" key
+   * There will be two sub-elements of that key, "stacktrace" and "threadName"
+   */
+  JsonLogger stack();
+
+  /**
    * Log the formatted message
    */
   void log();

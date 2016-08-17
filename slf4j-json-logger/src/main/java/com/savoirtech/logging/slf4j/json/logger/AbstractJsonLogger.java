@@ -27,6 +27,7 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.MDC;
 
 import java.text.Format;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -169,6 +170,20 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   }
 
   @Override
+  public JsonLogger stack() {
+    try {
+      Map<String, String> stackValues = new HashMap<>();
+      stackValues.put("stackTrace", formatStack());
+      stackValues.put("threadName", Thread.currentThread().getName());
+      jsonObject.add("stack", gson.toJsonTree(stackValues));
+    }
+    catch (Exception e) {
+      jsonObject.add("stack", gson.toJsonTree(formatException(e)));
+    }
+    return this;
+  }
+
+  @Override
   public abstract void log();
 
   protected String formatMessage(String level) {
@@ -205,5 +220,22 @@ public abstract class AbstractJsonLogger implements JsonLogger {
 
   private String formatException(Exception e) {
     return ExceptionUtils.getStackTrace(e);
+  }
+
+  /**
+   * Some contention over performance of Thread.currentThread.getStackTrace() vs (new Exception()).getStackTrace()
+   * Code in Thread.java actually uses the latter if 'this' is the current thread so we do the same
+   *
+   * Remove the top two elements as those are the elements from this logging class
+   */
+  private String formatStack() {
+    StringBuilder output = new StringBuilder();
+    StackTraceElement[] stackTraceElements = (new Exception()).getStackTrace();
+    output.append(stackTraceElements[2]);
+    for (int index = 3; index < stackTraceElements.length; index++) {
+      output.append("\n\tat ")
+          .append(stackTraceElements[index]);
+    }
+    return output.toString();
   }
 }
