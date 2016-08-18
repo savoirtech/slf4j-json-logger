@@ -27,7 +27,6 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.MDC;
 
 import java.text.Format;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -115,7 +114,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   }
 
   @Override
-  public JsonLogger field(String key, String value) {
+  public JsonLogger field(String key, Object value) {
     try {
       jsonObject.add(key, gson.toJsonTree(value));
     }
@@ -126,7 +125,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   }
 
   @Override
-  public JsonLogger field(String key, Supplier<String> value) {
+  public JsonLogger field(String key, Supplier value) {
     try {
       jsonObject.add(key, gson.toJsonTree(value.get()));
     }
@@ -172,13 +171,10 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   @Override
   public JsonLogger stack() {
     try {
-      Map<String, String> stackValues = new HashMap<>();
-      stackValues.put("stackTrace", formatStack());
-      stackValues.put("threadName", Thread.currentThread().getName());
-      jsonObject.add("stack", gson.toJsonTree(stackValues));
+      jsonObject.add("stacktrace", gson.toJsonTree(formatStack()));
     }
     catch (Exception e) {
-      jsonObject.add("stack", gson.toJsonTree(formatException(e)));
+      jsonObject.add("stacktrace", gson.toJsonTree(formatException(e)));
     }
     return this;
   }
@@ -189,29 +185,42 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   protected String formatMessage(String level) {
 
     jsonObject.add("level", gson.toJsonTree(level));
+    jsonObject.add("thread_name", gson.toJsonTree(Thread.currentThread().getName()));
+
+    try {
+      jsonObject.add("class", gson.toJsonTree(getCallingClass()));
+    }
+    catch (Exception e) {
+      jsonObject.add("class", gson.toJsonTree(formatException(e)));
+    }
 
     if (includeLoggerName) {
-      jsonObject.add("logger", gson.toJsonTree(slf4jLogger.getName()));
+      jsonObject.add("logger_name", gson.toJsonTree(slf4jLogger.getName()));
     }
 
     try {
-      jsonObject.add("timestamp", gson.toJsonTree(getCurrentTimestamp(formatter)));
+      jsonObject.add("@timestamp", gson.toJsonTree(getCurrentTimestamp(formatter)));
     }
     catch (Exception e) {
-      jsonObject.add("timestamp", gson.toJsonTree(formatException(e)));
+      jsonObject.add("@timestamp", gson.toJsonTree(formatException(e)));
     }
 
     Map mdc = MDC.getCopyOfContextMap();
     if (mdc != null && !mdc.isEmpty()) {
       try {
-        jsonObject.add("MDC", gson.toJsonTree(mdc));
+        jsonObject.add("mdc", gson.toJsonTree(mdc));
       }
       catch (Exception e) {
-        jsonObject.add("MDC", gson.toJsonTree(formatException(e)));
+        jsonObject.add("mdc", gson.toJsonTree(formatException(e)));
       }
     }
 
     return gson.toJson(jsonObject);
+  }
+
+  private String getCallingClass() {
+    StackTraceElement[] stackTraceElements = (new Exception()).getStackTrace();
+    return stackTraceElements[3].getClassName();
   }
 
   private String getCurrentTimestamp(Format formatter) {

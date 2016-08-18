@@ -67,7 +67,7 @@ public class AbstractJsonLoggerTest {
   }
 
   @Test
-  public void testMessage() {
+  public void message() {
     logger.message("message").log();
     assert (logMessage.contains("\"message\":\"message\""));
   }
@@ -148,7 +148,44 @@ public class AbstractJsonLoggerTest {
   public void MDC() {
     MDC.put("myMDC", "someValue");
     logger.message("message").log();
-    assert (logMessage.contains("\"MDC\":{\"myMDC\":\"someValue\""));
+    assert (logMessage.contains("\"mdc\":{\"myMDC\":\"someValue\""));
     MDC.clear();
+  }
+
+  @Test
+  public void containsThreadName() {
+    logger.message("Some message").log();
+    assert (logMessage.contains("\"thread_name\":\"" + Thread.currentThread().getName() + "\""));
+  }
+
+  @Test
+  public void containsClassName() {
+    logger.message("Some message").log();
+    assert (logMessage.contains("\"class\":\"com.savoirtech.logging.slf4j.json.logger.AbstractJsonLoggerTest\""));
+  }
+
+  @Test
+  public void numberAsString() {
+    logger.field("Number as a string", "1.011").log();
+    assert (logMessage.contains("\"Number as a string\":\"1.011\""));
+  }
+
+  @Test
+  public void numberInteger() {
+    logger.field("Integer", 42).log();
+    assert (logMessage.contains("\"Integer\":42"));
+  }
+
+  @Test
+  public void numberDouble() {
+    logger.field("Double", 1.042).log();
+    assert (logMessage.contains("\"Double\":1.042"));
+  }
+
+  @Test
+  public void numberRepeatingDouble() {
+    logger.field("Repeating double", 10.0/3.0).log();
+    //avoiding precision/scale issues
+    assert (logMessage.contains("\"Repeating double\":3.333"));
   }
 }

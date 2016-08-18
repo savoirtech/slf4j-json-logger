@@ -17,22 +17,42 @@ Logging configuration
 log4j.appender.out.layout.ConversionPattern=%m%n
 ````
 
+Logging interface
+===========
+https://github.com/savoirtech/slf4j-json-logger/blob/master/slf4j-json-logger/src/main/java/com/savoirtech/logging/slf4j/json/logger/JsonLogger.java
+
+You will have already specified by the log level before reaching this interface.
+
 LoggerFactory
 ===========
 - Convention based static factory with familiar getLogger methods
 - Factory contains a static field controlling the date format.  Override as desired.
-- Default date format and example output:
+- Factory also contains a static boolean field controlling output of the logger name.  Override as desired.  On by default.
+- Default date format: yyyy-MM-dd HH:mm:ss.SSSZ
+- Example output:
 ````
-yyyy-MM-dd HH:mm:ss.SSSZ
-{"message":"It works!","level":"INFO","timestamp":"2016-03-29 11:28:23.709-0400"}
+{"message":"It works!","level":"INFO","thread_name":"main","class":"com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests","logger_name":"com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests","@timestamp":"2016-08-18 08:40:49.550-0400"}
 ````
+
+Default fields
+===========
+- level
+- thread_name
+- class
+- logger_name (can be toggled on/off above)
+- @timestamp (format set above)
+
+Conventions
+===========
+Where applicable we have adopted the same naming and defaults conventions observed by our friends working on the JSON layout for log4j:
+(https://github.com/logstash/log4j-jsonevent-layout)
 
 Logger
 ===========
 - Uses a builder pattern to help define the JSON structures being added to the log message
 - Requires the log level as the first method called
 - Simple example:
-````
+````java
 import com.savoirtech.logging.slf4j.json.LoggerFactory;
 
    Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -41,7 +61,7 @@ import com.savoirtech.logging.slf4j.json.LoggerFactory;
        .log();
 ````
 - With collections:
-````
+````java
    Map<String, String> map = new HashMap<>();
    map.put("numberSold", "0");
 
@@ -55,12 +75,13 @@ import com.savoirtech.logging.slf4j.json.LoggerFactory;
        .list("customers", list)
        .field("year", "2016")
        .log();
-
-{"message":"Report executed","someStats":{"numberSold":"0"},"customers":["Acme","Sun"],"year":"2016","level":"TRACE","timestamp":"2016-03-29 12:55:50.945-0400"}
+````
+````
+{"message":"Report executed","someStats":{"numberSold":"0"},"customers":["Acme","Sun"],"year":"2016","level":"TRACE","thread_name":"main","class":"com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests","logger_name":"com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests","@timestamp":"2016-08-18 12:17:56.308-0400"}
 ````
 - Gson is used to serialize objects.  The collections and objects passed in can be arbitrarily complex and/or custom.
 - This library supports lambdas in order to lazily evaluate the logged objects and only evaluate if the log level is enabled.  Should be used when the log information is expensive to generate.
-````
+````java
    logger.error()
        .message(() -> "Something expensive")
        .log();
@@ -68,7 +89,7 @@ import com.savoirtech.logging.slf4j.json.LoggerFactory;
 - .message() is a convenience method for .field("message", "your message")
 - Information placed in the MDC will be logged under a top level "MDC" key in the JSON structure.  Care should be taken
 to not set a field, map or list at this key as it will be overwritten.
-````
+````java
     Map<String, String> map = new HashMap<>();
     map.put("TTL", "90000");
     map.put("persistenceTime", "30000");
@@ -79,14 +100,47 @@ to not set a field, map or list at this key as it will be overwritten.
         .message("Service trace")
         .map("someStats", map)
         .log();
-
-{"message":"Service trace","someStats":{"persistenceTime":"30000","TTL":"90000"},"level":"INFO","timestamp":"2016-03-29 13:23:37.906-0400","MDC":{"caller":"127.0.0.1"}}
 ````
-- Exceptions will be formatted with the exception.toString() + exception.getStackTrace() combined into the JSON object.
 ````
+{"message":"Service trace","someStats":{"persistenceTime":"30000","TTL":"90000"},"level":"INFO","thread_name":"main","class":"com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests","logger_name":"com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests","@timestamp":"2016-08-18 12:18:32.108-0400","mdc":{"caller":"127.0.0.1"}}
+````
+- Exceptions will be formatted with Apache Commons ExceptionUtils.
+````java
     logger.error()
         .exception("myException", new RuntimeException("Something bad"))
         .log();
+````
+````
+{"myException":"java.lang.RuntimeException: Something bad\n\tat com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests.deleteMe(BasicLoggingTests.java:47)\n\tat  ... \n","level":"ERROR","thread_name":"main","class":"com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests","logger_name":"com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests","@timestamp":"2016-08-18 12:19:23.101-0400"}
+````
+- The stack() method allows easy output of the current stack.  Useful for code that can be reached through many paths.
+````java
+    logger.info()
+        .stack()
+        .message("Some message")
+        .log();
+````
+````
+{"stacktrace":"com.savoirtech.logging.slf4j.json.logger.StackTest$Class4.logMe(StackTest.java:79)\n\tat com.savoirtech.logging.slf4j.json.logger.StackTest$Class3.logMe(StackTest.java:69) ... ","message":"Some message","level":"INFO","thread_name":"main","class":"com.savoirtech.logging.slf4j.json.logger.StackTest$Class4","@timestamp":"2016-08-18 12:47:18.306-0400"}
+````
 
-{"myException":["java.lang.RuntimeException: Something bad",{"declaringClass":"com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests","methodName":"itWorks","fileName":"BasicLoggingTests.java","lineNumber":52} ...
+Caution on logging numbers in JSON
+===========
+- Log monitoring/management applications like Loggly and Logstash require number fields to be actual number values in the JSON rather than String (single/double quoted) numbers.
+````java
+    logger.info()
+        .field("Number that is not a number", "1.042")
+        .log();
+````
+````
+{"Number as a string":"1.042", ...
+````
+````java
+    double myDouble = 10.0/3.0;
+    logger.info()
+        .field("Some timing metric", myDouble)
+        .log();
+````
+````
+{"Some timing metric":3.3333333333333335, ...
 ````

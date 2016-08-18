@@ -133,10 +133,16 @@ public class AbstractJsonLoggerExceptionTest {
   }
 
   @Test
+  public void stack() {
+    logger.stack().log();
+    assert(logMessage.contains("\"stacktrace\":\"java.lang.RuntimeException: x-rt-exc-x"));
+  }
+
+  @Test
   public void mdc() {
     MDC.put("x-mdc-key-x", "x-mdc-value-x");
     logger.log();
-    assert (logMessage.contains("\"MDC\":\"java.lang.RuntimeException: x-rt-exc-x"));
+    assert (logMessage.contains("\"mdc\":\"java.lang.RuntimeException: x-rt-exc-x"));
   }
 
 
@@ -172,7 +178,7 @@ public class AbstractJsonLoggerExceptionTest {
       //  exception from this test.  Also do not throw an exception when the logger formats the
       //  "INFO" level.
       //
-      if (value.startsWith("java.lang.RuntimeException:") || value.equals("INFO")) {
+      if (value.startsWith("java.lang.RuntimeException:") || value.equals("INFO") || value.equals(Thread.currentThread().getName())) {
         out.value(value);
       } else {
         throw new RuntimeException("x-rt-exc-x");
