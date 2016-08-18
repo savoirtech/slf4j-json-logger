@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 public interface JsonLogger {
 
   /**
-   * Set top level message field
+   * Set top level message field.  Convenience method for .field("message", ... )
    */
   JsonLogger message(String message);
 
@@ -59,12 +59,12 @@ public interface JsonLogger {
   /**
    * Add a top level field
    */
-  JsonLogger field(String key, String value);
+  JsonLogger field(String key, Object value);
 
   /**
    * Add a top level field as a lambda or supplier that is lazily evaluated only if the message is logged
    */
-  JsonLogger field(String key, Supplier<String> value);
+  JsonLogger field(String key, Supplier value);
 
   /**
    * Add an arbitrary JsonElement object to the top level with the given key.
@@ -81,6 +81,12 @@ public interface JsonLogger {
    * similar to how it is outputted using exception.printStackTrace()
    */
   JsonLogger exception(String key, Exception exception);
+
+  /**
+   * Include the stack dump of the current running thread in the log output.
+   * This data will be included in the output under the "stacktrace" key
+   */
+  JsonLogger stack();
 
   /**
    * Log the formatted message

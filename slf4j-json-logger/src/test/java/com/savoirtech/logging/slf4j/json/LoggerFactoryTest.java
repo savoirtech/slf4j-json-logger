@@ -18,15 +18,18 @@
 
 package com.savoirtech.logging.slf4j.json;
 
+import com.savoirtech.logging.slf4j.json.logger.JsonLogger;
 import com.savoirtech.logging.slf4j.json.logger.Logger;
 
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.junit.After;
 import org.junit.Test;
 import org.mockito.internal.util.reflection.Whitebox;
 
 import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -35,6 +38,11 @@ import static org.junit.Assert.assertNotNull;
  * Created by art on 3/28/16.
  */
 public class LoggerFactoryTest {
+
+  @After
+  public void reset() {
+    LoggerFactory.setIncludeLoggerName(true);
+  }
 
   /**
    * Test the constructor purely for code-coverage.
@@ -77,5 +85,19 @@ public class LoggerFactoryTest {
     FastDateFormat formatter = (FastDateFormat) formatterField.get(null);
 
     assertEquals("HH:MM", formatter.getPattern());
+  }
+
+  @Test
+  public void testSetIncludeLoggerName() {
+    LoggerFactory.setIncludeLoggerName(false);
+    Logger result = LoggerFactory.getLogger(this.getClass());
+
+    boolean includeLoggerName = (boolean) Whitebox.getInternalState(result, "includeLoggerName");
+    assertFalse(includeLoggerName);
+
+    JsonLogger jsonLogger = result.info().message("A message");
+    includeLoggerName = (boolean) Whitebox.getInternalState(jsonLogger, "includeLoggerName");
+
+    assertFalse(includeLoggerName);
   }
 }

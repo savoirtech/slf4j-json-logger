@@ -36,11 +36,13 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   private FastDateFormat formatter;
   private Gson gson;
   private JsonObject jsonObject;
+  private boolean includeLoggerName;
 
-  public AbstractJsonLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson) {
+  public AbstractJsonLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson, boolean includeLoggerName) {
     this.slf4jLogger = slf4jLogger;
     this.formatter = formatter;
     this.gson = gson;
+    this.includeLoggerName = includeLoggerName;
 
     jsonObject = new JsonObject();
   }
@@ -112,7 +114,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   }
 
   @Override
-  public JsonLogger field(String key, String value) {
+  public JsonLogger field(String key, Object value) {
     try {
       jsonObject.add(key, gson.toJsonTree(value));
     }
@@ -123,7 +125,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   }
 
   @Override
-  public JsonLogger field(String key, Supplier<String> value) {
+  public JsonLogger field(String key, Supplier value) {
     try {
       jsonObject.add(key, gson.toJsonTree(value.get()));
     }
@@ -167,30 +169,58 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   }
 
   @Override
+  public JsonLogger stack() {
+    try {
+      jsonObject.add("stacktrace", gson.toJsonTree(formatStack()));
+    }
+    catch (Exception e) {
+      jsonObject.add("stacktrace", gson.toJsonTree(formatException(e)));
+    }
+    return this;
+  }
+
+  @Override
   public abstract void log();
 
   protected String formatMessage(String level) {
 
     jsonObject.add("level", gson.toJsonTree(level));
+    jsonObject.add("thread_name", gson.toJsonTree(Thread.currentThread().getName()));
 
     try {
-      jsonObject.add("timestamp", gson.toJsonTree(getCurrentTimestamp(formatter)));
+      jsonObject.add("class", gson.toJsonTree(getCallingClass()));
     }
     catch (Exception e) {
-      jsonObject.add("timestamp", gson.toJsonTree(formatException(e)));
+      jsonObject.add("class", gson.toJsonTree(formatException(e)));
+    }
+
+    if (includeLoggerName) {
+      jsonObject.add("logger_name", gson.toJsonTree(slf4jLogger.getName()));
+    }
+
+    try {
+      jsonObject.add("@timestamp", gson.toJsonTree(getCurrentTimestamp(formatter)));
+    }
+    catch (Exception e) {
+      jsonObject.add("@timestamp", gson.toJsonTree(formatException(e)));
     }
 
     Map mdc = MDC.getCopyOfContextMap();
     if (mdc != null && !mdc.isEmpty()) {
       try {
-        jsonObject.add("MDC", gson.toJsonTree(mdc));
+        jsonObject.add("mdc", gson.toJsonTree(mdc));
       }
       catch (Exception e) {
-        jsonObject.add("MDC", gson.toJsonTree(formatException(e)));
+        jsonObject.add("mdc", gson.toJsonTree(formatException(e)));
       }
     }
 
     return gson.toJson(jsonObject);
+  }
+
+  private String getCallingClass() {
+    StackTraceElement[] stackTraceElements = (new Exception()).getStackTrace();
+    return stackTraceElements[3].getClassName();
   }
 
   private String getCurrentTimestamp(Format formatter) {
@@ -199,5 +229,22 @@ public abstract class AbstractJsonLogger implements JsonLogger {
 
   private String formatException(Exception e) {
     return ExceptionUtils.getStackTrace(e);
+  }
+
+  /**
+   * Some contention over performance of Thread.currentThread.getStackTrace() vs (new Exception()).getStackTrace()
+   * Code in Thread.java actually uses the latter if 'this' is the current thread so we do the same
+   *
+   * Remove the top two elements as those are the elements from this logging class
+   */
+  private String formatStack() {
+    StringBuilder output = new StringBuilder();
+    StackTraceElement[] stackTraceElements = (new Exception()).getStackTrace();
+    output.append(stackTraceElements[2]);
+    for (int index = 3; index < stackTraceElements.length; index++) {
+      output.append("\n\tat ")
+          .append(stackTraceElements[index]);
+    }
+    return output.toString();
   }
 }

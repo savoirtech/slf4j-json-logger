@@ -59,7 +59,7 @@ public class BasicLoggingTests {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isInfoEnabled()).thenReturn(true);
 
-    Logger logger = new Logger(slf4jLogger, formatter);
+    Logger logger = new Logger(slf4jLogger, formatter, true);
 
     logger.info().message("My message").log();
 
@@ -80,7 +80,7 @@ public class BasicLoggingTests {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isDebugEnabled()).thenReturn(false);
 
-    Logger logger = new Logger(slf4jLogger, formatter);
+    Logger logger = new Logger(slf4jLogger, formatter, true);
 
     logger.info().message("My message").log();
 
@@ -98,7 +98,7 @@ public class BasicLoggingTests {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isTraceEnabled()).thenReturn(true);
 
-    Logger logger = new Logger(slf4jLogger, formatter);
+    Logger logger = new Logger(slf4jLogger, formatter, true);
 
     Map<String, String> map = new HashMap<>();
     map.put("numberSold", "0");
@@ -137,7 +137,7 @@ public class BasicLoggingTests {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isWarnEnabled()).thenReturn(true);
 
-    Logger logger = new Logger(slf4jLogger, formatter);
+    Logger logger = new Logger(slf4jLogger, formatter, true);
 
     logger.warn()
         .message("This gets overwritten")
@@ -161,7 +161,7 @@ public class BasicLoggingTests {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isErrorEnabled()).thenReturn(true);
 
-    Logger logger = new Logger(slf4jLogger, formatter);
+    Logger logger = new Logger(slf4jLogger, formatter, true);
 
     logger.error()
         .message(() -> "Something expensive")
@@ -174,5 +174,51 @@ public class BasicLoggingTests {
     String actualMessage = messageCaptor.getValue();
 
     assert(actualMessage.contains(expectedCategoryElement));
+  }
+
+  @Test
+  public void includesLoggerName() {
+    String expectedLoggerName = "\"logger\":\"com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests\"";
+
+    org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
+    when(slf4jLogger.isInfoEnabled()).thenReturn(true);
+    when(slf4jLogger.getName()).thenReturn(this.getClass().getName());
+
+    Logger logger = new Logger(slf4jLogger, formatter, true);
+    logger.info()
+        .message("something")
+        .log();
+
+    ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
+
+    verify(slf4jLogger).info(messageCaptor.capture());
+
+    String actualMessage = messageCaptor.getValue();
+
+    assert(actualMessage.contains(expectedLoggerName));
+  }
+
+  @Test
+  public void doesNotIncludeLoggerName() {
+    String expectedLoggerNameKey = "\"logger\":";
+    String expectedLoggerNameValue = "\"com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests\"";
+
+    org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
+    when(slf4jLogger.isInfoEnabled()).thenReturn(true);
+    when(slf4jLogger.getName()).thenReturn(this.getClass().getName());
+
+    Logger logger = new Logger(slf4jLogger, formatter, false);
+    logger.info()
+        .message("something")
+        .log();
+
+    ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
+
+    verify(slf4jLogger).info(messageCaptor.capture());
+
+    String actualMessage = messageCaptor.getValue();
+
+    assert(!actualMessage.contains(expectedLoggerNameKey));
+    assert(!actualMessage.contains(expectedLoggerNameValue));
   }
 }

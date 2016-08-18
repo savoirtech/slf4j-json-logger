@@ -31,17 +31,19 @@ public class Logger {
 
   private Gson gson = new GsonBuilder().disableHtmlEscaping().create();
   private FastDateFormat formatter;
+  private boolean includeLoggerName;
 
   private NoopLogger noopLogger = new NoopLogger();
 
-  public Logger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter) {
+  public Logger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, boolean includeLoggerName) {
     this.slf4jLogger = slf4jLogger;
     this.formatter = formatter;
+    this.includeLoggerName = includeLoggerName;
   }
 
   public JsonLogger trace() {
     if (slf4jLogger.isTraceEnabled()) {
-      return new TraceLogger(slf4jLogger, formatter, gson);
+      return new TraceLogger(slf4jLogger, formatter, gson, includeLoggerName);
     }
 
     return noopLogger;
@@ -49,7 +51,7 @@ public class Logger {
 
   public JsonLogger debug() {
     if (slf4jLogger.isDebugEnabled()) {
-      return new DebugLogger(slf4jLogger, formatter, gson);
+      return new DebugLogger(slf4jLogger, formatter, gson, includeLoggerName);
     }
 
     return noopLogger;
@@ -57,7 +59,7 @@ public class Logger {
 
   public JsonLogger info() {
     if (slf4jLogger.isInfoEnabled()) {
-      return new InfoLogger(slf4jLogger, formatter, gson);
+      return new InfoLogger(slf4jLogger, formatter, gson, includeLoggerName);
     }
 
     return noopLogger;
@@ -65,7 +67,7 @@ public class Logger {
 
   public JsonLogger warn() {
     if (slf4jLogger.isWarnEnabled()) {
-      return new WarnLogger(slf4jLogger, formatter, gson);
+      return new WarnLogger(slf4jLogger, formatter, gson, includeLoggerName);
     }
 
     return noopLogger;
@@ -73,7 +75,7 @@ public class Logger {
 
   public JsonLogger error() {
     if (slf4jLogger.isErrorEnabled()) {
-      return new ErrorLogger(slf4jLogger, formatter, gson);
+      return new ErrorLogger(slf4jLogger, formatter, gson, includeLoggerName);
     }
 
     return noopLogger;

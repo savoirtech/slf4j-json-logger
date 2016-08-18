@@ -26,7 +26,6 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import org.slf4j.MDC;
 
@@ -54,7 +53,7 @@ public class AbstractJsonLoggerTest {
     this.gson = new GsonBuilder().disableHtmlEscaping().create();
     this.formatter = FastDateFormat.getInstance(dateFormatString);
 
-    logger = new AbstractJsonLogger(slf4jLogger, formatter, gson) {
+    logger = new AbstractJsonLogger(slf4jLogger, formatter, gson, true) {
       @Override
       public void log() {
         logMessage = formatMessage("INFO");
@@ -68,7 +67,7 @@ public class AbstractJsonLoggerTest {
   }
 
   @Test
-  public void testMessage() {
+  public void message() {
     logger.message("message").log();
     assert (logMessage.contains("\"message\":\"message\""));
   }
@@ -149,32 +148,44 @@ public class AbstractJsonLoggerTest {
   public void MDC() {
     MDC.put("myMDC", "someValue");
     logger.message("message").log();
-    assert (logMessage.contains("\"MDC\":{\"myMDC\":\"someValue\""));
+    assert (logMessage.contains("\"mdc\":{\"myMDC\":\"someValue\""));
     MDC.clear();
   }
 
-  private JsonElement matchesJsonElement(JsonElement expected) {
-    ArgumentMatcher<JsonElement> matcher = this.makeJsonElementMatcher(expected);
-
-    return Mockito.argThat(matcher);
+  @Test
+  public void containsThreadName() {
+    logger.message("Some message").log();
+    assert (logMessage.contains("\"thread_name\":\"" + Thread.currentThread().getName() + "\""));
   }
 
-  private ArgumentMatcher<JsonElement> makeJsonElementMatcher(JsonElement expected) {
-    return new ArgumentMatcher<JsonElement>() {
-      @Override
-      public boolean matches(Object argument) {
-        if (argument == null) {
-          return (expected == null);
-        }
+  @Test
+  public void containsClassName() {
+    logger.message("Some message").log();
+    assert (logMessage.contains("\"class\":\"com.savoirtech.logging.slf4j.json.logger.AbstractJsonLoggerTest\""));
+  }
 
-        if (argument instanceof JsonElement) {
-          JsonElement actual = (JsonElement) argument;
+  @Test
+  public void numberAsString() {
+    logger.field("Number as a string", "1.011").log();
+    assert (logMessage.contains("\"Number as a string\":\"1.011\""));
+  }
 
-          return actual.equals(expected);
-        }
+  @Test
+  public void numberInteger() {
+    logger.field("Integer", 42).log();
+    assert (logMessage.contains("\"Integer\":42"));
+  }
 
-        return false;
-      }
-    };
+  @Test
+  public void numberDouble() {
+    logger.field("Double", 1.042).log();
+    assert (logMessage.contains("\"Double\":1.042"));
+  }
+
+  @Test
+  public void numberRepeatingDouble() {
+    logger.field("Repeating double", 10.0/3.0).log();
+    //avoiding precision/scale issues
+    assert (logMessage.contains("\"Repeating double\":3.333"));
   }
 }

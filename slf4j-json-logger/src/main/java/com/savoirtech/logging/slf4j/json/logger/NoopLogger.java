@@ -57,12 +57,12 @@ public class NoopLogger implements JsonLogger {
   }
 
   @Override
-  public JsonLogger field(String key, String value) {
+  public JsonLogger field(String key, Object value) {
     return this;
   }
 
   @Override
-  public JsonLogger field(String key, Supplier<String> value) {
+  public JsonLogger field(String key, Supplier value) {
     return this;
   }
 
@@ -80,6 +80,9 @@ public class NoopLogger implements JsonLogger {
   public JsonLogger exception(String key, Exception exception) {
     return this;
   }
+
+  @Override
+  public JsonLogger stack() { return this; }
 
   @Override
   public void log() {
