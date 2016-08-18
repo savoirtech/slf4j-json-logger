@@ -21,7 +21,7 @@ Logging interface
 ===========
 https://github.com/savoirtech/slf4j-json-logger/blob/master/slf4j-json-logger/src/main/java/com/savoirtech/logging/slf4j/json/logger/JsonLogger.java
 
-You will have already specified by the log level before reaching this interface.
+You will have already specified the log level before reaching this interface.
 
 LoggerFactory
 ===========
