@@ -1,0 +1,37 @@
+<!--
+  ~ Copyright (c) 2012-2015 Savoir Technologies, Inc.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0" name="com.savoirtech.logging.slf4j.json-${project.version}">
+
+    <feature name="slf4j-json-logger-all" version="${project.version}">
+        <feature version="${gson.version}">gson</feature>
+        <feature version="${commons.lang3.version}">commons-lang3</feature>
+        <feature version="${project.version}">slf4j-json-logger</feature>
+    </feature>
+
+    <feature name="gson" version="${gson.version}">
+        <bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle>
+    </feature>
+
+    <feature name="commons-lang3" version="${commons.lang3.version}">
+        <bundle>mvn:org.apache.commons/commons-lang3/${commons.lang3.version}</bundle>
+    </feature>
+
+    <feature name="slf4j-json-logger" version="${project.version}">
+        <bundle>mvn:com.savoirtech.logging/slf4j-json-logger/${project.version}</bundle>
+    </feature>
+
+</features>

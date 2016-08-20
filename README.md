@@ -144,3 +144,13 @@ Caution on logging numbers in JSON
 ````
 {"Some timing metric":3.3333333333333335, ...
 ````
+
+OSGi - Karaf
+===========
+- The bundle can be installed directly or using the features file
+````
+bundle:install -s mvn:com.savoirtech.logging/slf4j-json-logger/2.0.1
+````
+feature:repo-add mvn:com.savoirtech.logging/osgi-features/2.0.1/xml/features
+feature:install slf4j-json-logger-all
+````

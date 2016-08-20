@@ -41,6 +41,7 @@
     <modules>
         <module>slf4j-json-logger</module>
         <module>slf4j-json-logger-mockito</module>
+        <module>features</module>
     </modules>
 
     <scm>
@@ -66,6 +67,12 @@
     </properties>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
