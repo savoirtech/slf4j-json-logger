@@ -30,7 +30,7 @@
     <groupId>com.savoirtech.logging</groupId>
     <artifactId>slf4j-json-logger-parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.1</version>
+    <version>2.0.2-SNAPSHOT</version>
     <name>SavoirTech ::: SLF4J JSON logger ::: Parent</name>
 
     <description>
