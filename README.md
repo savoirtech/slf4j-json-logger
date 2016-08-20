@@ -147,9 +147,11 @@ Caution on logging numbers in JSON
 
 OSGi - Karaf
 ===========
-- The bundle can be installed directly or using the features file
+- The bundle can be installed directly
 ````
 bundle:install -s mvn:com.savoirtech.logging/slf4j-json-logger/2.0.1
+````
+- or using the features file
 ````
 feature:repo-add mvn:com.savoirtech.logging/osgi-features/2.0.1/xml/features
 feature:install slf4j-json-logger-all
