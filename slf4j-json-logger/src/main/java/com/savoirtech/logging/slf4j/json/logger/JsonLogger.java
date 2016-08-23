@@ -57,12 +57,14 @@ public interface JsonLogger {
   JsonLogger list(String key, Supplier<List> list);
 
   /**
-   * Add a top level field
+   * Add a top level field.
+   * null values will be represented as the json null primitive
    */
   JsonLogger field(String key, Object value);
 
   /**
-   * Add a top level field as a lambda or supplier that is lazily evaluated only if the message is logged
+   * Add a top level field as a lambda or supplier that is lazily evaluated only if the message is logged.
+   * null values will be represented as the json null primitive
    */
   JsonLogger field(String key, Supplier value);
 

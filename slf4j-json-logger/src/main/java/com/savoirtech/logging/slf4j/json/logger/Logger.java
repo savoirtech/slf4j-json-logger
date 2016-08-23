@@ -29,7 +29,7 @@ import org.apache.commons.lang3.time.FastDateFormat;
 public class Logger {
   private org.slf4j.Logger slf4jLogger;
 
-  private Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+  private Gson gson = new GsonBuilder().disableHtmlEscaping().serializeNulls().create();
   private FastDateFormat formatter;
   private boolean includeLoggerName;
 

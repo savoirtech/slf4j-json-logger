@@ -127,7 +127,13 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   @Override
   public JsonLogger field(String key, Supplier value) {
     try {
-      jsonObject.add(key, gson.toJsonTree(value.get()));
+      // in the rare case that the value passed is null, this method will be selected as more specific than the Object
+      // method.  Have to handle it here or the value.get() will NullPointer
+      if (value == null) {
+        jsonObject.add(key, null);
+      } else {
+        jsonObject.add(key, gson.toJsonTree(value.get()));
+      }
     }
     catch (Exception e) {
       jsonObject.add(key, gson.toJsonTree(formatException(e)));

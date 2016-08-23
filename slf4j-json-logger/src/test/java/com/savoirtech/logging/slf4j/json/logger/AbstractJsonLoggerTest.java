@@ -50,7 +50,7 @@ public class AbstractJsonLoggerTest {
   @Before
   public void setup() {
     this.slf4jLogger = Mockito.mock(org.slf4j.Logger.class);
-    this.gson = new GsonBuilder().disableHtmlEscaping().create();
+    this.gson = new GsonBuilder().disableHtmlEscaping().serializeNulls().create();
     this.formatter = FastDateFormat.getInstance(dateFormatString);
 
     logger = new AbstractJsonLogger(slf4jLogger, formatter, gson, true) {
@@ -187,5 +187,13 @@ public class AbstractJsonLoggerTest {
     logger.field("Repeating double", 10.0/3.0).log();
     //avoiding precision/scale issues
     assert (logMessage.contains("\"Repeating double\":3.333"));
+  }
+
+  @Test
+  public void nullValueIsLogged() {
+    logger.field("nullValue", null).log();
+    // should not throw a null pointer
+    assert (!logMessage.contains("java.lang.NullPointerException"));
+    assert (logMessage.contains("\"nullValue\":null"));
   }
 }
