@@ -53,7 +53,7 @@ public class AbstractJsonLoggerTest {
     this.gson = new GsonBuilder().disableHtmlEscaping().serializeNulls().create();
     this.formatter = FastDateFormat.getInstance(dateFormatString);
 
-    logger = new AbstractJsonLogger(slf4jLogger, formatter, gson, true) {
+    logger = new AbstractJsonLogger(slf4jLogger, formatter, gson, true, true, true) {
       @Override
       public void log() {
         logMessage = formatMessage("INFO");

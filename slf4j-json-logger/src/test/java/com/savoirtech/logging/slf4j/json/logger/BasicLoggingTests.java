@@ -59,7 +59,7 @@ public class BasicLoggingTests {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isInfoEnabled()).thenReturn(true);
 
-    Logger logger = new Logger(slf4jLogger, formatter, true);
+    Logger logger = new Logger(slf4jLogger, formatter, true, true, true);
 
     logger.info().message("My message").log();
 
@@ -80,7 +80,7 @@ public class BasicLoggingTests {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isDebugEnabled()).thenReturn(false);
 
-    Logger logger = new Logger(slf4jLogger, formatter, true);
+    Logger logger = new Logger(slf4jLogger, formatter, true, true, true);
 
     logger.info().message("My message").log();
 
@@ -98,7 +98,7 @@ public class BasicLoggingTests {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isTraceEnabled()).thenReturn(true);
 
-    Logger logger = new Logger(slf4jLogger, formatter, true);
+    Logger logger = new Logger(slf4jLogger, formatter, true, true, true);
 
     Map<String, String> map = new HashMap<>();
     map.put("numberSold", "0");
@@ -137,7 +137,7 @@ public class BasicLoggingTests {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isWarnEnabled()).thenReturn(true);
 
-    Logger logger = new Logger(slf4jLogger, formatter, true);
+    Logger logger = new Logger(slf4jLogger, formatter, true, true, true);
 
     logger.warn()
         .message("This gets overwritten")
@@ -161,7 +161,7 @@ public class BasicLoggingTests {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isErrorEnabled()).thenReturn(true);
 
-    Logger logger = new Logger(slf4jLogger, formatter, true);
+    Logger logger = new Logger(slf4jLogger, formatter, true, true, true);
 
     logger.error()
         .message(() -> "Something expensive")
@@ -178,13 +178,13 @@ public class BasicLoggingTests {
 
   @Test
   public void includesLoggerName() {
-    String expectedLoggerName = "\"logger\":\"com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests\"";
+    String expectedLoggerName = "\"logger_name\":\"com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests\"";
 
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isInfoEnabled()).thenReturn(true);
     when(slf4jLogger.getName()).thenReturn(this.getClass().getName());
 
-    Logger logger = new Logger(slf4jLogger, formatter, true);
+    Logger logger = new Logger(slf4jLogger, formatter, true, true, true);
     logger.info()
         .message("something")
         .log();
@@ -194,7 +194,6 @@ public class BasicLoggingTests {
     verify(slf4jLogger).info(messageCaptor.capture());
 
     String actualMessage = messageCaptor.getValue();
-
     assert(actualMessage.contains(expectedLoggerName));
   }
 
@@ -207,7 +206,7 @@ public class BasicLoggingTests {
     when(slf4jLogger.isInfoEnabled()).thenReturn(true);
     when(slf4jLogger.getName()).thenReturn(this.getClass().getName());
 
-    Logger logger = new Logger(slf4jLogger, formatter, false);
+    Logger logger = new Logger(slf4jLogger, formatter, false, true, true);
     logger.info()
         .message("something")
         .log();
@@ -220,5 +219,52 @@ public class BasicLoggingTests {
 
     assert(!actualMessage.contains(expectedLoggerNameKey));
     assert(!actualMessage.contains(expectedLoggerNameValue));
+  }
+  
+  @Test
+  public void doesNotIncludeThreadName() {
+    String expectedThreadNameKey = "\"thread_name\":";
+    String expectedThreadNameValue = "\"main\"";
+
+    org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
+    when(slf4jLogger.isInfoEnabled()).thenReturn(true);
+    when(slf4jLogger.getName()).thenReturn(this.getClass().getName());
+
+    Logger logger = new Logger(slf4jLogger, formatter, true, false, true);
+    logger.info()
+        .message("something")
+        .log();
+
+    ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
+
+    verify(slf4jLogger).info(messageCaptor.capture());
+
+    String actualMessage = messageCaptor.getValue();
+    assert(!actualMessage.contains(expectedThreadNameKey));
+    assert(!actualMessage.contains(expectedThreadNameValue));
+  }
+  
+    @Test
+    public void doesNotIncludeClassName() {
+    String expectedClassNameKey = "\"class\":";
+    String expectedClassNameValue = "\"com.savoirtech.logging.slf4j.json.logger.BasicLoggingTests\"";
+
+    org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
+    when(slf4jLogger.isInfoEnabled()).thenReturn(true);
+    when(slf4jLogger.getName()).thenReturn(this.getClass().getName());
+
+    Logger logger = new Logger(slf4jLogger, formatter, false, true, false);
+    logger.info()
+        .message("something")
+        .log();
+
+    ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
+
+    verify(slf4jLogger).info(messageCaptor.capture());
+
+    String actualMessage = messageCaptor.getValue();
+
+    assert(!actualMessage.contains(expectedClassNameKey));
+    assert(!actualMessage.contains(expectedClassNameValue));
   }
 }

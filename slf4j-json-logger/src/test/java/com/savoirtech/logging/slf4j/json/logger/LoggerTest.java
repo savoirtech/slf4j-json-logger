@@ -42,7 +42,7 @@ public class LoggerTest {
     this.slf4jLogger = Mockito.mock(org.slf4j.Logger.class);
     this.formatter = Mockito.mock(FastDateFormat.class);
 
-    this.logger = new Logger(slf4jLogger, formatter, true);
+    this.logger = new Logger(slf4jLogger, formatter, true, true, true);
   }
 
   @Test

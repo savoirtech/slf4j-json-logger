@@ -26,8 +26,8 @@ public class TraceLogger extends AbstractJsonLogger {
 
   public static final String LOG_LEVEL = "TRACE";
 
-  public TraceLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson, boolean includeLoggerName) {
-    super(slf4jLogger, formatter, gson, includeLoggerName);
+  public TraceLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson, boolean includeLoggerName, boolean includeThreadName, boolean includeClassName) {
+    super(slf4jLogger, formatter, gson, includeLoggerName, includeThreadName, includeClassName);
   }
 
   @Override

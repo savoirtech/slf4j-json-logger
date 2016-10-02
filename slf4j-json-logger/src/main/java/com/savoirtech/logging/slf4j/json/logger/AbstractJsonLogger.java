@@ -37,13 +37,18 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   private Gson gson;
   private JsonObject jsonObject;
   private boolean includeLoggerName;
+  private boolean includeThreadName;
+  private boolean includeClassName;
+  
 
-  public AbstractJsonLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson, boolean includeLoggerName) {
+  public AbstractJsonLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson, boolean includeLoggerName, boolean includeThreadName, boolean includeClassName) {
     this.slf4jLogger = slf4jLogger;
     this.formatter = formatter;
     this.gson = gson;
     this.includeLoggerName = includeLoggerName;
-
+    this.includeThreadName = includeThreadName;
+    this.includeClassName = includeClassName;
+    
     jsonObject = new JsonObject();
   }
 
@@ -191,13 +196,18 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   protected String formatMessage(String level) {
 
     jsonObject.add("level", gson.toJsonTree(level));
-    jsonObject.add("thread_name", gson.toJsonTree(Thread.currentThread().getName()));
-
-    try {
-      jsonObject.add("class", gson.toJsonTree(getCallingClass()));
+    
+    if (includeThreadName) {   
+        jsonObject.add("thread_name", gson.toJsonTree(Thread.currentThread().getName()));
     }
-    catch (Exception e) {
-      jsonObject.add("class", gson.toJsonTree(formatException(e)));
+
+    if (includeClassName) {
+        try {
+          jsonObject.add("class", gson.toJsonTree(getCallingClass()));
+        }
+        catch (Exception e) {
+          jsonObject.add("class", gson.toJsonTree(formatException(e)));
+        }
     }
 
     if (includeLoggerName) {

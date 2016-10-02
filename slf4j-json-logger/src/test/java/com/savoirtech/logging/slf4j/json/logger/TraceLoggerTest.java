@@ -49,7 +49,7 @@ public class TraceLoggerTest {
     this.slf4jLogger = Mockito.mock(org.slf4j.Logger.class);
     this.gson = new GsonBuilder().disableHtmlEscaping().create();
 
-    this.logger = new TraceLogger(slf4jLogger, null, gson, true) {
+    this.logger = new TraceLogger(slf4jLogger, null, gson, true, true, true) {
       @Override
       protected String formatMessage(String level) {
         if (level.equals(TraceLogger.LOG_LEVEL)) {
