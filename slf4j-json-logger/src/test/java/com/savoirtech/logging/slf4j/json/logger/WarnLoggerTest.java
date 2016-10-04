@@ -49,7 +49,7 @@ public class WarnLoggerTest {
     this.slf4jLogger = Mockito.mock(org.slf4j.Logger.class);
     this.gson = new GsonBuilder().disableHtmlEscaping().create();
 
-    this.logger = new WarnLogger(slf4jLogger, null, gson, true, true, true) {
+    this.logger = new WarnLogger(slf4jLogger, null, gson, true) {
       @Override
       protected String formatMessage(String level) {
         if (level.equals(WarnLogger.LOG_LEVEL)) {

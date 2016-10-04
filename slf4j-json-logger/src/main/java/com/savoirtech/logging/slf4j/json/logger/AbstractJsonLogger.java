@@ -37,17 +37,15 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   private Gson gson;
   private JsonObject jsonObject;
   private boolean includeLoggerName;
-  private boolean includeThreadName;
-  private boolean includeClassName;
+  private boolean includeThreadName = true ;
+  private boolean includeClassName = true ;
   
 
-  public AbstractJsonLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson, boolean includeLoggerName, boolean includeThreadName, boolean includeClassName) {
+  public AbstractJsonLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson, boolean includeLoggerName) {
     this.slf4jLogger = slf4jLogger;
     this.formatter = formatter;
     this.gson = gson;
     this.includeLoggerName = includeLoggerName;
-    this.includeThreadName = includeThreadName;
-    this.includeClassName = includeClassName;
     
     jsonObject = new JsonObject();
   }
@@ -247,6 +245,23 @@ public abstract class AbstractJsonLogger implements JsonLogger {
     return ExceptionUtils.getStackTrace(e);
   }
 
+    public boolean isIncludeThreadName() {
+        return includeThreadName;
+    }
+
+    public void setIncludeThreadName(boolean includeThreadName) {
+        this.includeThreadName = includeThreadName;
+    }
+
+    public boolean isIncludeClassName() {
+        return includeClassName;
+    }
+
+    public void setIncludeClassName(boolean includeClassName) {
+        this.includeClassName = includeClassName;
+    }
+
+  
   /**
    * Some contention over performance of Thread.currentThread.getStackTrace() vs (new Exception()).getStackTrace()
    * Code in Thread.java actually uses the latter if 'this' is the current thread so we do the same

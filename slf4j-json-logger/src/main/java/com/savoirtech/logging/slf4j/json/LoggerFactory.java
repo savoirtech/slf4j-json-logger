@@ -31,12 +31,12 @@ public class LoggerFactory {
 
   public static Logger getLogger(String name) {
     org.slf4j.Logger slf4jLogger = org.slf4j.LoggerFactory.getLogger(name);
-    return new Logger(slf4jLogger, formatter, includeLoggerName, includeThreadName,includeClassName);
+    return new Logger(slf4jLogger, formatter, includeLoggerName);
   }
 
   public static Logger getLogger(Class<?> clazz) {
     org.slf4j.Logger slf4jLogger = org.slf4j.LoggerFactory.getLogger(clazz);
-    return new Logger(slf4jLogger, formatter, includeLoggerName, includeThreadName,includeClassName);
+    return new Logger(slf4jLogger, formatter, includeLoggerName);
   }
 
   public static void setDateFormatString(String dateFormatString) {

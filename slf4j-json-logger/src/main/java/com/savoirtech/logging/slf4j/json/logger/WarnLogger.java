@@ -26,8 +26,8 @@ public class WarnLogger extends AbstractJsonLogger {
 
   public static final String LOG_LEVEL = "WARN";
 
-  public WarnLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson, boolean includeLoggerName, boolean includeThreadName, boolean includeClassName) {
-    super(slf4jLogger, formatter, gson, includeLoggerName, includeThreadName, includeClassName);
+  public WarnLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson, boolean includeLoggerName) {
+    super(slf4jLogger, formatter, gson, includeLoggerName);
   }
 
   @Override
