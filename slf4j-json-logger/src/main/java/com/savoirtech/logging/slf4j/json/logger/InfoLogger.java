@@ -26,8 +26,8 @@ public class InfoLogger extends AbstractJsonLogger {
 
   public static final String LOG_LEVEL = "INFO";
 
-  public InfoLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson, boolean includeLoggerName) {
-    super(slf4jLogger, formatter, gson, includeLoggerName);
+  public InfoLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson) {
+    super(slf4jLogger, formatter, gson);
   }
 
   @Override

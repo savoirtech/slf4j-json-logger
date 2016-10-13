@@ -34,6 +34,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 public class AbstractJsonLoggerTest {
 
   private AbstractJsonLogger logger;
@@ -53,7 +56,7 @@ public class AbstractJsonLoggerTest {
     this.gson = new GsonBuilder().disableHtmlEscaping().serializeNulls().create();
     this.formatter = FastDateFormat.getInstance(dateFormatString);
 
-    logger = new AbstractJsonLogger(slf4jLogger, formatter, gson, true) {
+    logger = new AbstractJsonLogger(slf4jLogger, formatter, gson) {
       @Override
       public void log() {
         logMessage = formatMessage("INFO");
@@ -64,6 +67,27 @@ public class AbstractJsonLoggerTest {
   @After
   public void cleanupTest() {
     MDC.clear();
+  }
+
+  @Test
+  public void testGetSetIncludeClassName() {
+    assertTrue(logger.isIncludeClassName());
+    logger.setIncludeClassName(false);
+    assertFalse(logger.isIncludeClassName());
+  }
+
+  @Test
+  public void testGetSetIncludeThreadName() {
+    assertTrue(logger.isIncludeThreadName());
+    logger.setIncludeThreadName(false);
+    assertFalse(logger.isIncludeThreadName());
+  }
+
+  @Test
+  public void testGetSetIncludeLoggerName() {
+    assertTrue(logger.isIncludeLoggerName());
+    logger.setIncludeLoggerName(false);
+    assertFalse(logger.isIncludeLoggerName());
   }
 
   @Test

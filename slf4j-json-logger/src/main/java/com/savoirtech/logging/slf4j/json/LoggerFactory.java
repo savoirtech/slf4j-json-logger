@@ -29,15 +29,9 @@ public class LoggerFactory {
   private static boolean includeThreadName = true;
   private static boolean includeClassName = true; 
 
-  public static Logger getLogger(String name) {
-    org.slf4j.Logger slf4jLogger = org.slf4j.LoggerFactory.getLogger(name);
-    return new Logger(slf4jLogger, formatter, includeLoggerName);
-  }
-
-  public static Logger getLogger(Class<?> clazz) {
-    org.slf4j.Logger slf4jLogger = org.slf4j.LoggerFactory.getLogger(clazz);
-    return new Logger(slf4jLogger, formatter, includeLoggerName);
-  }
+//========================================
+// Static Getters and Setters
+//----------------------------------------
 
   public static void setDateFormatString(String dateFormatString) {
     LoggerFactory.dateFormatString = dateFormatString;
@@ -55,5 +49,45 @@ public class LoggerFactory {
   public static void setIncludeClassName(boolean includeClassName) {
     LoggerFactory.includeClassName = includeClassName;
   }
-  
+
+  public static boolean isIncludeLoggerName() {
+    return includeLoggerName;
+  }
+
+  public static boolean isIncludeThreadName() {
+    return includeThreadName;
+  }
+
+  public static boolean isIncludeClassName() {
+    return includeClassName;
+  }
+//========================================
+// Factory API
+//----------------------------------------
+
+  public static Logger getLogger(String name) {
+    org.slf4j.Logger slf4jLogger = org.slf4j.LoggerFactory.getLogger(name);
+    Logger result = new Logger(slf4jLogger, formatter);
+    configureLogger(result);
+
+    return result;
+  }
+
+  public static Logger getLogger(Class<?> clazz) {
+    org.slf4j.Logger slf4jLogger = org.slf4j.LoggerFactory.getLogger(clazz);
+    Logger result = new Logger(slf4jLogger, formatter);
+    configureLogger(result);
+
+    return result;
+  }
+
+//========================================
+// Internal Methods
+//----------------------------------------
+
+  private static void configureLogger(Logger logger) {
+    logger.setIncludeClassName(includeClassName);
+    logger.setIncludeLoggerName(includeLoggerName);
+    logger.setIncludeThreadName(includeThreadName);
+  }
 }

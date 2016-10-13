@@ -36,19 +36,50 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   private FastDateFormat formatter;
   private Gson gson;
   private JsonObject jsonObject;
-  private boolean includeLoggerName;
+  private boolean includeLoggerName = true;
   private boolean includeThreadName = true ;
   private boolean includeClassName = true ;
   
 
-  public AbstractJsonLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson, boolean includeLoggerName) {
+  public AbstractJsonLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson) {
     this.slf4jLogger = slf4jLogger;
     this.formatter = formatter;
     this.gson = gson;
-    this.includeLoggerName = includeLoggerName;
-    
+
     jsonObject = new JsonObject();
   }
+
+//========================================
+// Getters and Setters
+//----------------------------------------
+
+  public boolean isIncludeLoggerName() {
+    return includeLoggerName;
+  }
+
+  public void setIncludeLoggerName(boolean includeLoggerName) {
+    this.includeLoggerName = includeLoggerName;
+  }
+
+  public boolean isIncludeThreadName() {
+    return includeThreadName;
+  }
+
+  public void setIncludeThreadName(boolean includeThreadName) {
+    this.includeThreadName = includeThreadName;
+  }
+
+  public boolean isIncludeClassName() {
+    return includeClassName;
+  }
+
+  public void setIncludeClassName(boolean includeClassName) {
+    this.includeClassName = includeClassName;
+  }
+
+//========================================
+// Public API
+//----------------------------------------
 
   @Override
   public JsonLogger message(String message) {
@@ -191,6 +222,10 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   @Override
   public abstract void log();
 
+//========================================
+// Internals
+//----------------------------------------
+
   protected String formatMessage(String level) {
 
     jsonObject.add("level", gson.toJsonTree(level));
@@ -244,22 +279,6 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   private String formatException(Exception e) {
     return ExceptionUtils.getStackTrace(e);
   }
-
-    public boolean isIncludeThreadName() {
-        return includeThreadName;
-    }
-
-    public void setIncludeThreadName(boolean includeThreadName) {
-        this.includeThreadName = includeThreadName;
-    }
-
-    public boolean isIncludeClassName() {
-        return includeClassName;
-    }
-
-    public void setIncludeClassName(boolean includeClassName) {
-        this.includeClassName = includeClassName;
-    }
 
   
   /**

@@ -31,21 +31,54 @@ public class Logger {
 
   private Gson gson = new GsonBuilder().disableHtmlEscaping().serializeNulls().create();
   private FastDateFormat formatter;
-  private boolean includeLoggerName;
+  private boolean includeLoggerName = true;
   private boolean includeThreadName = true ;
   private boolean includeClassName = true ; 
 
   private NoopLogger noopLogger = new NoopLogger();
 
-  public Logger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, boolean includeLoggerName) {
+  public Logger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter) {
     this.slf4jLogger = slf4jLogger;
     this.formatter = formatter;
-    this.includeLoggerName = includeLoggerName ;
   }
+
+//========================================
+// Getters and Setters
+//----------------------------------------
+
+  public boolean isIncludeLoggerName() {
+    return includeLoggerName;
+  }
+
+  public void setIncludeLoggerName(boolean includeLoggerName) {
+    this.includeLoggerName = includeLoggerName;
+  }
+
+  public boolean isIncludeThreadName() {
+    return includeThreadName;
+  }
+
+  public void setIncludeThreadName(boolean includeThreadName) {
+    this.includeThreadName = includeThreadName;
+  }
+
+  public boolean isIncludeClassName() {
+    return includeClassName;
+  }
+
+  public void setIncludeClassName(boolean includeClassName) {
+    this.includeClassName = includeClassName;
+  }
+
+//========================================
+// Log Level API
+//----------------------------------------
 
   public JsonLogger trace() {
     if (slf4jLogger.isTraceEnabled()) {
-      return new TraceLogger(slf4jLogger, formatter, gson, includeLoggerName);
+      TraceLogger result = new TraceLogger(slf4jLogger, formatter, gson);
+      this.configureLogger(result);
+      return result;
     }
 
     return noopLogger;
@@ -53,7 +86,9 @@ public class Logger {
 
   public JsonLogger debug() {
     if (slf4jLogger.isDebugEnabled()) {
-      return new DebugLogger(slf4jLogger, formatter, gson, includeLoggerName);
+      DebugLogger result = new DebugLogger(slf4jLogger, formatter, gson);
+      this.configureLogger(result);
+      return result;
     }
 
     return noopLogger;
@@ -61,7 +96,9 @@ public class Logger {
 
   public JsonLogger info() {
     if (slf4jLogger.isInfoEnabled()) {
-      return new InfoLogger(slf4jLogger, formatter, gson, includeLoggerName);
+      InfoLogger result = new InfoLogger(slf4jLogger, formatter, gson);
+      this.configureLogger(result);
+      return result;
     }
 
     return noopLogger;
@@ -69,7 +106,9 @@ public class Logger {
 
   public JsonLogger warn() {
     if (slf4jLogger.isWarnEnabled()) {
-      return new WarnLogger(slf4jLogger, formatter, gson, includeLoggerName);
+      WarnLogger result = new WarnLogger(slf4jLogger, formatter, gson);
+      this.configureLogger(result);
+      return result;
     }
 
     return noopLogger;
@@ -77,9 +116,21 @@ public class Logger {
 
   public JsonLogger error() {
     if (slf4jLogger.isErrorEnabled()) {
-      return new ErrorLogger(slf4jLogger, formatter, gson, includeLoggerName);
+      ErrorLogger result = new ErrorLogger(slf4jLogger, formatter, gson);
+      this.configureLogger(result);
+      return result;
     }
 
     return noopLogger;
+  }
+
+//========================================
+// Internal Methods
+//----------------------------------------
+
+  private void configureLogger(AbstractJsonLogger logger) {
+    logger.setIncludeClassName(this.includeClassName);
+    logger.setIncludeLoggerName(this.includeLoggerName);
+    logger.setIncludeThreadName(this.includeThreadName);
   }
 }

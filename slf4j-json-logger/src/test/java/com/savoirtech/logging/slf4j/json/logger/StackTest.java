@@ -26,7 +26,7 @@ public class StackTest {
     this.gson = new GsonBuilder().disableHtmlEscaping().create();
     this.formatter = FastDateFormat.getInstance(dateFormatString);
 
-    logger = new AbstractJsonLogger(slf4jLogger, formatter, gson, true) {
+    logger = new AbstractJsonLogger(slf4jLogger, formatter, gson) {
       @Override
       public void log() {
         logMessage = formatMessage("INFO");
