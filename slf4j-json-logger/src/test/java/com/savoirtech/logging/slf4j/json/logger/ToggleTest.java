@@ -18,28 +18,20 @@
 package com.savoirtech.logging.slf4j.json.logger;
 
 import com.google.gson.Gson;
-import org.apache.commons.lang3.time.FastDateFormat;
 
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Verify all of the operations of the InfoLogger itself. Note this
- * intentionally does not test any of AbstractJsonLogger.
- *
- * Created by art on 3/28/16.
+ * Verify the operation of the logger settings.
  */
 public class ToggleTest {
 
-//  private InfoLogger logger;
-//
-//  private String testMessage;
-//
-//  private org.slf4j.Logger slf4jLogger;
-//
     private Gson gson;
 
     String dateFormatString = "yyyy-MM-dd HH:mm:ss.SSSZ";
@@ -54,12 +46,11 @@ public class ToggleTest {
         when(slf4jLogger.isInfoEnabled()).thenReturn(true);
         when(slf4jLogger.getName()).thenReturn(this.getClass().getName());
 
-//    Logger logger = new Logger(slf4jLogger, formatter, true, false, true);
-        Logger logger = new Logger(slf4jLogger, formatter, true);
+        Logger logger = new Logger(slf4jLogger, formatter);
+        logger.setIncludeClassName(false);
+        logger.setIncludeThreadName(false);
 
         JsonLogger infoLogger = logger.info();
-        infoLogger.setIncludeClassName(false);
-        infoLogger.setIncludeThreadName(false);
 
         infoLogger
                 .message("something")
@@ -83,11 +74,11 @@ public class ToggleTest {
         when(slf4jLogger.isInfoEnabled()).thenReturn(true);
         when(slf4jLogger.getName()).thenReturn(this.getClass().getName());
 
-        Logger logger = new Logger(slf4jLogger, formatter, true);
+        Logger logger = new Logger(slf4jLogger, formatter);
 
         JsonLogger infoLogger = logger.info();
-        infoLogger.setIncludeClassName(false);
-        infoLogger.setIncludeThreadName(true);
+        logger.setIncludeClassName(false);
+        logger.setIncludeThreadName(true);
 
         infoLogger
                 .message("something")
@@ -111,10 +102,11 @@ public class ToggleTest {
         when(slf4jLogger.isInfoEnabled()).thenReturn(true);
         when(slf4jLogger.getName()).thenReturn(this.getClass().getName());
 
-        Logger logger = new Logger(slf4jLogger, formatter, false);
+        Logger logger = new Logger(slf4jLogger, formatter);
+        logger.setIncludeClassName(false);
+        logger.setIncludeThreadName(false);
+
         JsonLogger infoLogger = logger.info();
-        infoLogger.setIncludeClassName(false);
-        infoLogger.setIncludeThreadName(false);
 
         infoLogger
                 .message("something")
@@ -139,10 +131,10 @@ public class ToggleTest {
         when(slf4jLogger.isInfoEnabled()).thenReturn(true);
         when(slf4jLogger.getName()).thenReturn(this.getClass().getName());
 
-        Logger logger = new Logger(slf4jLogger, formatter, false);
+        Logger logger = new Logger(slf4jLogger, formatter);
         JsonLogger infoLogger = logger.info();
-        infoLogger.setIncludeClassName(true);
-        infoLogger.setIncludeThreadName(false);
+        logger.setIncludeClassName(true);
+        logger.setIncludeThreadName(false);
 
         infoLogger
                 .message("something")

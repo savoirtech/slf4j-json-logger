@@ -19,6 +19,7 @@
 package com.savoirtech.logging.slf4j.json.logger;
 
 import com.google.gson.JsonElement;
+
 import org.slf4j.Marker;
 
 import java.util.List;
@@ -86,32 +87,12 @@ public class NoopLogger implements JsonLogger {
   public JsonLogger stack() { return this; }
 
   @Override
+  public JsonLogger marker(Marker marker) {
+    return this;
+  }
+
+  @Override
   public void log() {
 
-  }
-
-  @Override
-  public void log(Marker marker) {
-
-  }
-
-  @Override
-  public boolean isIncludeThreadName() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public void setIncludeThreadName(boolean includeThreadName) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public boolean isIncludeClassName() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public void setIncludeClassName(boolean includeClassName) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 }

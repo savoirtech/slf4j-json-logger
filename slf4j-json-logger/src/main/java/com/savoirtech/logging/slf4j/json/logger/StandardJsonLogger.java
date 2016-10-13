@@ -30,26 +30,74 @@ import org.slf4j.Marker;
 import java.text.Format;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public abstract class AbstractJsonLogger implements JsonLogger {
-  protected org.slf4j.Logger slf4jLogger;
-  private FastDateFormat formatter;
-  private Gson gson;
-  private JsonObject jsonObject;
-  private boolean includeLoggerName;
+public class StandardJsonLogger implements JsonLogger {
+  private final org.slf4j.Logger slf4jLogger;
+  private final FastDateFormat formatter;
+  private final Gson gson;
+  private final JsonObject jsonObject;
+
+  // LEVEL-Specific Settings
+  private final Consumer<String> logOperation;
+  private final BiConsumer<Marker, String> logWithMarkerOperation;
+  private final String levelName;
+
+  private Marker marker;
+
+  private boolean includeLoggerName = true;
   private boolean includeThreadName = true ;
   private boolean includeClassName = true ;
-  
 
-  public AbstractJsonLogger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson, boolean includeLoggerName) {
+  public StandardJsonLogger(org.slf4j.Logger slf4jLogger,
+                            FastDateFormat formatter, Gson gson,
+                            String levelName,
+                            Consumer<String> logOperation,
+                            BiConsumer<Marker, String> logWithMarkerOperation) {
     this.slf4jLogger = slf4jLogger;
     this.formatter = formatter;
     this.gson = gson;
-    this.includeLoggerName = includeLoggerName;
-    
-    jsonObject = new JsonObject();
+
+    this.levelName = levelName;
+    this.logOperation = logOperation;
+    this.logWithMarkerOperation = logWithMarkerOperation;
+
+    this.jsonObject = new JsonObject();
   }
+
+//========================================
+// Getters and Setters
+//----------------------------------------
+
+  public boolean isIncludeLoggerName() {
+    return includeLoggerName;
+  }
+
+  public void setIncludeLoggerName(boolean includeLoggerName) {
+    this.includeLoggerName = includeLoggerName;
+  }
+
+  public boolean isIncludeThreadName() {
+    return includeThreadName;
+  }
+
+  public void setIncludeThreadName(boolean includeThreadName) {
+    this.includeThreadName = includeThreadName;
+  }
+
+  public boolean isIncludeClassName() {
+    return includeClassName;
+  }
+
+  public void setIncludeClassName(boolean includeClassName) {
+    this.includeClassName = includeClassName;
+  }
+
+//========================================
+// Public API
+//----------------------------------------
 
   @Override
   public JsonLogger message(String message) {
@@ -190,21 +238,33 @@ public abstract class AbstractJsonLogger implements JsonLogger {
   }
 
   @Override
-  public abstract void log();
+  public JsonLogger marker(Marker marker) {
+    this.marker = marker;
+    jsonObject.add("marker", gson.toJsonTree(marker.getName()));
+
+    return this;
+  }
 
   @Override
-  public abstract void log(Marker marker);
+  public void log() {
+    String message = this.formatMessage(levelName);
 
-  protected String formatMessage(String marker, String level) {
-    jsonObject.add("marker", gson.toJsonTree(marker));
-    return formatMessage(level);
+    if (this.marker == null) {
+      this.logOperation.accept(message);
+    } else {
+      this.logWithMarkerOperation.accept(marker, message);
+    }
   }
+
+//========================================
+// Internals
+//----------------------------------------
 
   protected String formatMessage(String level) {
 
     jsonObject.add("level", gson.toJsonTree(level));
-    
-    if (includeThreadName) {   
+
+    if (includeThreadName) {
         jsonObject.add("thread_name", gson.toJsonTree(Thread.currentThread().getName()));
     }
 
@@ -254,23 +314,7 @@ public abstract class AbstractJsonLogger implements JsonLogger {
     return ExceptionUtils.getStackTrace(e);
   }
 
-    public boolean isIncludeThreadName() {
-        return includeThreadName;
-    }
 
-    public void setIncludeThreadName(boolean includeThreadName) {
-        this.includeThreadName = includeThreadName;
-    }
-
-    public boolean isIncludeClassName() {
-        return includeClassName;
-    }
-
-    public void setIncludeClassName(boolean includeClassName) {
-        this.includeClassName = includeClassName;
-    }
-
-  
   /**
    * Some contention over performance of Thread.currentThread.getStackTrace() vs (new Exception()).getStackTrace()
    * Code in Thread.java actually uses the latter if 'this' is the current thread so we do the same

@@ -22,9 +22,12 @@ import com.google.gson.JsonObject;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.MarkerFactory;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+
+import static org.junit.Assert.assertSame;
 
 /**
  * Verify operation of the NoopLogger; note that there is very little validation here since all of
@@ -45,72 +48,94 @@ public class NoopLoggerTest {
 
   @Test
   public void testMap() throws Exception {
-    this.logger.map("x-map-key-x", new HashMap());
+    JsonLogger result = this.logger.map("x-map-key-x", new HashMap());
+    assertSame(result, this.logger);
   }
 
   @Test
   public void testMapSupplier() throws Exception {
-    this.logger.map("x-map-key-x", () -> {
+    JsonLogger result = this.logger.map("x-map-key-x", () -> {
       throw new RuntimeException("unexpected execution");
-    })
-        .log();
+    });
+    assertSame(result, this.logger);
   }
 
   @Test
   public void testList() throws Exception {
-    this.logger.list("x-list-key-x", new LinkedList());
+    JsonLogger result = this.logger.list("x-list-key-x", new LinkedList());
+    assertSame(result, this.logger);
   }
 
   @Test
   public void testListSupplier() throws Exception {
-    this.logger.list("x-list-key-x", () -> {
+    JsonLogger result = this.logger.list("x-list-key-x", () -> {
       throw new RuntimeException("unexpected execution");
-    })
-        .log();
+    });
+    assertSame(result, this.logger);
   }
 
   @Test
   public void testMessage() throws Exception {
-    this.logger.message("x-message-x").log();
+    JsonLogger result = this.logger.message("x-message-x");
+    assertSame(result, this.logger);
   }
 
   @Test
   public void testMessageSupplier() throws Exception {
-    this.logger.message(() -> { throw new RuntimeException("unexpected execution"); }).log();
-
+    JsonLogger result = this.logger.message(() -> {
+      throw new RuntimeException("unexpected execution");
+    });
+    assertSame(result, this.logger);
   }
 
   @Test
   public void testField() throws Exception {
-    this.logger.field("x-field-key-x", "x-field-value-x").log();
+    JsonLogger result = this.logger.field("x-field-key-x", "x-field-value-x");
+    assertSame(result, this.logger);
   }
 
   @Test
   public void testFieldSupplier() throws Exception {
-    this.logger.field("x-field-key-x", () -> {
+    JsonLogger result = this.logger.field("x-field-key-x", () -> {
       throw new RuntimeException("unexpected execution");
-    }).log();
+    });
+    assertSame(result, this.logger);
   }
 
   @Test
   public void testJson() {
-    this.logger.json("x-field-key-x", new JsonObject()).log();
+    JsonLogger result = this.logger.json("x-field-key-x", new JsonObject());
+    assertSame(result, this.logger);
   }
 
   @Test
   public void testJsonSupplier() {
-    this.logger.json("x-field-key-x", () -> {
+    JsonLogger result = this.logger.json("x-field-key-x", () -> {
       throw new RuntimeException("unexpected execution");
     });
+    assertSame(result, this.logger);
   }
 
   @Test
   public void testException() {
-    this.logger.exception("x-map-key-x", new RuntimeException("Not logged"));
+    JsonLogger result = this.logger.exception("x-map-key-x", new RuntimeException("Not logged"));
+    assertSame(result, this.logger);
+  }
+
+  @Test
+  public void testStack() {
+    JsonLogger result = this.logger.stack();
+    assertSame(result, this.logger);
   }
 
   @Test
   public void testLog() throws Exception {
     this.logger.log();
+  }
+
+  @Test
+  public void testMarker() throws Exception {
+    JsonLogger result = this.logger.marker(MarkerFactory.getMarker("x-test-marker-x"));
+    assertSame(result, this.logger);
   }
 }

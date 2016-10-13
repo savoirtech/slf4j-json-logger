@@ -31,7 +31,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.MDC;
-import org.slf4j.Marker;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -39,8 +38,8 @@ import java.util.LinkedList;
 
 import static org.mockito.Mockito.mock;
 
-public class AbstractJsonLoggerExceptionTest {
-  private AbstractJsonLogger logger;
+public class StandardJsonLoggerExceptionTest {
+  private StandardJsonLogger logger;
 
   private org.slf4j.Logger slf4jLogger;
 
@@ -60,15 +59,10 @@ public class AbstractJsonLoggerExceptionTest {
 
     this.formatter = FastDateFormat.getInstance(dateFormatString);
 
-    logger = new AbstractJsonLogger(slf4jLogger, formatter, gson, true) {
+    logger = new StandardJsonLogger(slf4jLogger, formatter, gson, null, null, null) {
       @Override
       public void log() {
         logMessage = formatMessage("INFO");
-      }
-
-      @Override
-      public void log(Marker marker) {
-        logMessage = formatMessage(marker.getName(), "INFO");
       }
 
     };

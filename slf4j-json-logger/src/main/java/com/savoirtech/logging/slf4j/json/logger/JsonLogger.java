@@ -19,6 +19,7 @@
 package com.savoirtech.logging.slf4j.json.logger;
 
 import com.google.gson.JsonElement;
+
 import org.slf4j.Marker;
 
 import java.util.List;
@@ -86,36 +87,21 @@ public interface JsonLogger {
   JsonLogger exception(String key, Exception exception);
 
   /**
-   * Get the toggle state if the thread name is included in the message
-   */
-  boolean isIncludeThreadName(); 
-
-  /**
-   * Set the toggle state if the thread name is included in the message
-   */
-  void setIncludeThreadName(boolean includeThreadName) ;
-
-  /**
-   * Get the toggle state if the class name is included in the message
-   */  
-  boolean isIncludeClassName() ;
-
-  /**
-   * Set the toggle state if the class name is included in the message
-   */
-  void setIncludeClassName(boolean includeClassName) ;
-    
-    
-  /**
    * Include the stack dump of the current running thread in the log output.
    * This data will be included in the output under the "stacktrace" key
    */
   JsonLogger stack();
 
   /**
+   * Set the marker to use when generating the log message.
+   *
+   * @param marker marker to use when generating the log message.  See details in the SLF4J Logger
+   *               API documents.
+   */
+  JsonLogger marker(Marker marker);
+
+  /**
    * Log the formatted message
    */
   void log();
-
-  void log(Marker marker);
 }

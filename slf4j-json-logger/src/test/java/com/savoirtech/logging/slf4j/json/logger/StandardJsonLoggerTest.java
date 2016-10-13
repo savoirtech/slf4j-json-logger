@@ -29,44 +29,42 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-public class AbstractJsonLoggerTest {
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-  private AbstractJsonLogger logger;
+public class StandardJsonLoggerTest {
+
+  private StandardJsonLogger logger;
 
   private org.slf4j.Logger slf4jLogger;
+  private Consumer<String> messageConsumer;
+  private BiConsumer<Marker, String> markerMessageConsumer;
+  private Marker marker;
 
   private Gson gson;
 
   private String dateFormatString = "yyyy-MM-dd HH:mm:ss.SSSZ";
   private FastDateFormat formatter;
 
-  private String logMessage;
-
   @Before
   public void setup() {
     this.slf4jLogger = Mockito.mock(org.slf4j.Logger.class);
+    this.messageConsumer = Mockito.mock(Consumer.class);
+    this.markerMessageConsumer = Mockito.mock(BiConsumer.class);
+    this.marker = Mockito.mock(Marker.class);
+
     this.gson = new GsonBuilder().disableHtmlEscaping().serializeNulls().create();
     this.formatter = FastDateFormat.getInstance(dateFormatString);
 
-    logger = new AbstractJsonLogger(slf4jLogger, formatter, gson, true) {
-      @Override
-      public void log() {
-        logMessage = formatMessage("INFO");
-      }
-
-      @Override
-      public void log(Marker marker) {
-        logMessage = formatMessage(marker.getName(), "INFO");
-      }
-
-    };
+    logger = new StandardJsonLogger(slf4jLogger, formatter, gson, "WARN", this.messageConsumer, this.markerMessageConsumer);
   }
 
   @After
@@ -75,15 +73,36 @@ public class AbstractJsonLoggerTest {
   }
 
   @Test
+  public void testGetSetIncludeClassName() {
+    assertTrue(logger.isIncludeClassName());
+    logger.setIncludeClassName(false);
+    assertFalse(logger.isIncludeClassName());
+  }
+
+  @Test
+  public void testGetSetIncludeThreadName() {
+    assertTrue(logger.isIncludeThreadName());
+    logger.setIncludeThreadName(false);
+    assertFalse(logger.isIncludeThreadName());
+  }
+
+  @Test
+  public void testGetSetIncludeLoggerName() {
+    assertTrue(logger.isIncludeLoggerName());
+    logger.setIncludeLoggerName(false);
+    assertFalse(logger.isIncludeLoggerName());
+  }
+
+  @Test
   public void message() {
     logger.message("message").log();
-    assert (logMessage.contains("\"message\":\"message\""));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"message\":\"message\""));
   }
 
   @Test
   public void messageSupplier() {
     logger.message(() -> "message").log();
-    assert (logMessage.contains("\"message\":\"message\""));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"message\":\"message\""));
   }
 
   @Test
@@ -91,7 +110,7 @@ public class AbstractJsonLoggerTest {
     Map<String, String> map = new HashMap<>();
     map.put("key", "value");
     logger.map("someMap", map).log();
-    assert (logMessage.contains("\"someMap\":{\"key\":\"value\"}"));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"someMap\":{\"key\":\"value\"}"));
   }
 
   @Test
@@ -99,7 +118,7 @@ public class AbstractJsonLoggerTest {
     Map<String, String> map = new HashMap<>();
     map.put("key", "value");
     logger.map("someMap", () -> map).log();
-    assert (logMessage.contains("\"someMap\":{\"key\":\"value\"}"));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"someMap\":{\"key\":\"value\"}"));
   }
 
   @Test
@@ -108,7 +127,7 @@ public class AbstractJsonLoggerTest {
     list.add("value1");
     list.add("value2");
     logger.list("someList", list).log();
-    assert (logMessage.contains("\"someList\":[\"value1\",\"value2\"]"));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"someList\":[\"value1\",\"value2\"]"));
   }
 
   @Test
@@ -117,97 +136,101 @@ public class AbstractJsonLoggerTest {
     list.add("value1");
     list.add("value2");
     logger.list("someList", () -> list).log();
-    assert (logMessage.contains("\"someList\":[\"value1\",\"value2\"]"));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"someList\":[\"value1\",\"value2\"]"));
   }
 
   @Test
   public void field() {
     logger.field("key", "value").log();
-    assert (logMessage.contains("\"key\":\"value\""));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"key\":\"value\""));
   }
 
   @Test
   public void fieldSupplier() {
     logger.field("key", () -> "value").log();
-    assert (logMessage.contains("\"key\":\"value\""));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"key\":\"value\""));
   }
 
   @Test
   public void json() {
     JsonElement jsonElement = gson.toJsonTree(new String[]{"value1", "value2"});
     logger.json("json", jsonElement).log();
-    assert (logMessage.contains("\"json\":[\"value1\",\"value2\"]"));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"json\":[\"value1\",\"value2\"]"));
   }
 
   @Test
   public void jsonSupplier() {
     JsonElement jsonElement = gson.toJsonTree(new String[]{"value1", "value2"});
     logger.json("json", () -> jsonElement).log();
-    assert (logMessage.contains("\"json\":[\"value1\",\"value2\"]"));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"json\":[\"value1\",\"value2\"]"));
   }
 
   @Test
   public void exception() {
     logger.exception("myException", new RuntimeException("Something bad")).log();
-    assert (logMessage.contains("\"myException\":\"java.lang.RuntimeException: Something bad"));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"myException\":\"java.lang.RuntimeException: Something bad"));
   }
 
   @Test
   public void MDC() {
     MDC.put("myMDC", "someValue");
     logger.message("message").log();
-    assert (logMessage.contains("\"mdc\":{\"myMDC\":\"someValue\""));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"mdc\":{\"myMDC\":\"someValue\""));
     MDC.clear();
   }
 
   @Test
   public void containsThreadName() {
     logger.message("Some message").log();
-    assert (logMessage.contains("\"thread_name\":\"" + Thread.currentThread().getName() + "\""));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"thread_name\":\"" + Thread.currentThread().getName() + "\""));
   }
 
   @Test
   public void containsClassName() {
     logger.message("Some message").log();
-    assert (logMessage.contains("\"class\":\"com.savoirtech.logging.slf4j.json.logger.AbstractJsonLoggerTest\""));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"class\":\"" + this.getClass().getName() + "\""));
   }
 
   @Test
   public void numberAsString() {
     logger.field("Number as a string", "1.011").log();
-    assert (logMessage.contains("\"Number as a string\":\"1.011\""));
+    Mockito.verify(this.messageConsumer).accept(
+    Mockito.contains("\"Number as a string\":\"1.011\""));
   }
 
   @Test
   public void numberInteger() {
     logger.field("Integer", 42).log();
-    assert (logMessage.contains("\"Integer\":42"));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"Integer\":42"));
   }
 
   @Test
   public void numberDouble() {
     logger.field("Double", 1.042).log();
-    assert (logMessage.contains("\"Double\":1.042"));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"Double\":1.042"));
   }
 
   @Test
   public void numberRepeatingDouble() {
-    logger.field("Repeating double", 10.0/3.0).log();
-    //avoiding precision/scale issues
-    assert (logMessage.contains("\"Repeating double\":3.333"));
+    logger.field("Repeating double", 3.333).log();
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"Repeating double\":3.333"));
   }
 
   @Test
   public void nullValueIsLogged() {
     logger.field("nullValue", null).log();
     // should not throw a null pointer
-    assert (!logMessage.contains("java.lang.NullPointerException"));
-    assert (logMessage.contains("\"nullValue\":null"));
+    Mockito.verify(this.messageConsumer, Mockito.times(0)).accept(Mockito.contains("java.lang.NullPointerException"));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"nullValue\":null"));
   }
 
+  /**
+   * Verify operation of the marker() method.
+   */
   @Test
-  public void markerIsUsed() {
-    logger.log(MarkerFactory.getMarker("TEST"));
-    assert (logMessage.contains("\"marker\":\"TEST\""));
+  public void testMarker() throws Exception {
+    logger.marker(this.marker).log();
+
+    Mockito.verify(this.markerMessageConsumer).accept(Mockito.eq(this.marker), Mockito.contains("\"marker\":"));
   }
 }
