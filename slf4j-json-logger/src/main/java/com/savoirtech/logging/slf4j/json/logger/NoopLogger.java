@@ -88,4 +88,24 @@ public class NoopLogger implements JsonLogger {
   public void log() {
 
   }
+
+  @Override
+  public boolean isIncludeThreadName() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void setIncludeThreadName(boolean includeThreadName) {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public boolean isIncludeClassName() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void setIncludeClassName(boolean includeClassName) {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }

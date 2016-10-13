@@ -26,6 +26,8 @@ public class LoggerFactory {
   private static String dateFormatString = "yyyy-MM-dd HH:mm:ss.SSSZ";
   private static FastDateFormat formatter = FastDateFormat.getInstance(dateFormatString);
   private static boolean includeLoggerName = true;
+  private static boolean includeThreadName = true;
+  private static boolean includeClassName = true; 
 
   public static Logger getLogger(String name) {
     org.slf4j.Logger slf4jLogger = org.slf4j.LoggerFactory.getLogger(name);
@@ -45,4 +47,13 @@ public class LoggerFactory {
   public static void setIncludeLoggerName(boolean includeLoggerName) {
     LoggerFactory.includeLoggerName = includeLoggerName;
   }
+  
+  public static void setIncludeThreadName(boolean includeThreadName) {
+    LoggerFactory.includeThreadName = includeThreadName;
+  }
+
+  public static void setIncludeClassName(boolean includeClassName) {
+    LoggerFactory.includeClassName = includeClassName;
+  }
+  
 }

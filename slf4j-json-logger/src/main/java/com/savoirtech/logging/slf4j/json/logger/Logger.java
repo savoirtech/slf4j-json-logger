@@ -32,13 +32,15 @@ public class Logger {
   private Gson gson = new GsonBuilder().disableHtmlEscaping().serializeNulls().create();
   private FastDateFormat formatter;
   private boolean includeLoggerName;
+  private boolean includeThreadName = true ;
+  private boolean includeClassName = true ; 
 
   private NoopLogger noopLogger = new NoopLogger();
 
   public Logger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, boolean includeLoggerName) {
     this.slf4jLogger = slf4jLogger;
     this.formatter = formatter;
-    this.includeLoggerName = includeLoggerName;
+    this.includeLoggerName = includeLoggerName ;
   }
 
   public JsonLogger trace() {
