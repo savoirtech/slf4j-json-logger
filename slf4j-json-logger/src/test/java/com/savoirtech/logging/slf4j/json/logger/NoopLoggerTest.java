@@ -110,6 +110,11 @@ public class NoopLoggerTest {
   }
 
   @Test
+  public void testStack() {
+    this.logger.stack();
+  }
+
+  @Test
   public void testLog() throws Exception {
     this.logger.log();
   }

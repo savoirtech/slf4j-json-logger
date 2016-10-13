@@ -31,6 +31,7 @@ import java.lang.reflect.Field;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Validate the operation of the logger factory.
@@ -50,6 +51,27 @@ public class LoggerFactoryTest {
   @Test
   public void testConstructor() {
     new LoggerFactory();
+  }
+
+  @Test
+  public void testGetSetIncludeClassName() {
+    assertTrue(LoggerFactory.isIncludeClassName());
+    LoggerFactory.setIncludeClassName(false);
+    assertFalse(LoggerFactory.isIncludeClassName());
+  }
+
+  @Test
+  public void testGetSetIncludeThreadName() {
+    assertTrue(LoggerFactory.isIncludeThreadName());
+    LoggerFactory.setIncludeThreadName(false);
+    assertFalse(LoggerFactory.isIncludeThreadName());
+  }
+
+  @Test
+  public void testGetSetIncludeLoggerName() {
+    assertTrue(LoggerFactory.isIncludeLoggerName());
+    LoggerFactory.setIncludeLoggerName(false);
+    assertFalse(LoggerFactory.isIncludeLoggerName());
   }
 
   @Test

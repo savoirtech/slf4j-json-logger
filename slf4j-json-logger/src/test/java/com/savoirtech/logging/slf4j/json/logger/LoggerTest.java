@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -42,7 +43,28 @@ public class LoggerTest {
     this.slf4jLogger = Mockito.mock(org.slf4j.Logger.class);
     this.formatter = Mockito.mock(FastDateFormat.class);
 
-    this.logger = new Logger(slf4jLogger, formatter, true);
+    this.logger = new Logger(slf4jLogger, formatter);
+  }
+
+  @Test
+  public void testGetSetIncludeClassName() {
+    assertTrue(this.logger.isIncludeClassName());
+    this.logger.setIncludeClassName(false);
+    assertFalse(this.logger.isIncludeClassName());
+  }
+
+  @Test
+  public void testGetSetIncludeLoggerName() {
+    assertTrue(this.logger.isIncludeLoggerName());
+    this.logger.setIncludeLoggerName(false);
+    assertFalse(this.logger.isIncludeLoggerName());
+  }
+
+  @Test
+  public void testGetSetIncludeThreadName() {
+    assertTrue(this.logger.isIncludeThreadName());
+    this.logger.setIncludeThreadName(false);
+    assertFalse(this.logger.isIncludeThreadName());
   }
 
   @Test

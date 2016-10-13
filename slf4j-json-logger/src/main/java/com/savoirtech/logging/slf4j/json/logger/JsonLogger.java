@@ -85,27 +85,6 @@ public interface JsonLogger {
   JsonLogger exception(String key, Exception exception);
 
   /**
-   * Get the toggle state if the thread name is included in the message
-   */
-  boolean isIncludeThreadName(); 
-
-  /**
-   * Set the toggle state if the thread name is included in the message
-   */
-  void setIncludeThreadName(boolean includeThreadName) ;
-
-  /**
-   * Get the toggle state if the class name is included in the message
-   */  
-  boolean isIncludeClassName() ;
-
-  /**
-   * Set the toggle state if the class name is included in the message
-   */
-  void setIncludeClassName(boolean includeClassName) ;
-    
-    
-  /**
    * Include the stack dump of the current running thread in the log output.
    * This data will be included in the output under the "stacktrace" key
    */
