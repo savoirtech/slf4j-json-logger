@@ -7,6 +7,7 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.slf4j.Marker;
 
 public class StackTest {
   private AbstractJsonLogger logger;
@@ -31,6 +32,12 @@ public class StackTest {
       public void log() {
         logMessage = formatMessage("INFO");
       }
+
+      @Override
+      public void log(Marker marker) {
+        logMessage = formatMessage(marker.getName(), "INFO");
+      }
+
     };
   }
 

@@ -28,6 +28,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.slf4j.MDC;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -58,6 +60,12 @@ public class AbstractJsonLoggerTest {
       public void log() {
         logMessage = formatMessage("INFO");
       }
+
+      @Override
+      public void log(Marker marker) {
+        logMessage = formatMessage(marker.getName(), "INFO");
+      }
+
     };
   }
 
@@ -195,5 +203,11 @@ public class AbstractJsonLoggerTest {
     // should not throw a null pointer
     assert (!logMessage.contains("java.lang.NullPointerException"));
     assert (logMessage.contains("\"nullValue\":null"));
+  }
+
+  @Test
+  public void markerIsUsed() {
+    logger.log(MarkerFactory.getMarker("TEST"));
+    assert (logMessage.contains("\"marker\":\"TEST\""));
   }
 }

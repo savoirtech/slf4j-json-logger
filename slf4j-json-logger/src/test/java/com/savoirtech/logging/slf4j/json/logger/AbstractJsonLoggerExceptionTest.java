@@ -31,6 +31,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.MDC;
+import org.slf4j.Marker;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -64,6 +65,12 @@ public class AbstractJsonLoggerExceptionTest {
       public void log() {
         logMessage = formatMessage("INFO");
       }
+
+      @Override
+      public void log(Marker marker) {
+        logMessage = formatMessage(marker.getName(), "INFO");
+      }
+
     };
   }
 
