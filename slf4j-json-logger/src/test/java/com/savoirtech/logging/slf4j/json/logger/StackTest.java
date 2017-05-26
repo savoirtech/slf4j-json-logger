@@ -7,6 +7,7 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.slf4j.Marker;
 
 public class StackTest {
   private AbstractJsonLogger logger;
@@ -31,6 +32,12 @@ public class StackTest {
       public void log() {
         logMessage = formatMessage("INFO");
       }
+
+      @Override
+      public void log(Marker marker) {
+        logMessage = formatMessage(marker.getName(), "INFO");
+      }
+
     };
   }
 
@@ -84,7 +91,7 @@ public class StackTest {
   public void stack() {
     Class1 class1 = new Class1();
     class1.logMe();
-    assert(logMessage.contains("\"stacktrace\":\"com.savoirtech.logging.slf4j.json.logger.StackTest$Class4.logMe(StackTest.java:79)\\n\\tat com.savoirtech.logging.slf4j.json.logger.StackTest$Class3.logMe(StackTest.java:69)\\n\\tat com.savoirtech.logging.slf4j.json.logger.StackTest$Class2.logMe(StackTest.java:57)\\n\\tat com.savoirtech.logging.slf4j.json.logger.StackTest$Class1.logMe(StackTest.java:45)"));
+    assert(logMessage.contains("\"stacktrace\":\"com.savoirtech.logging.slf4j.json.logger.StackTest$Class4.logMe(StackTest.java:86)\\n\\tat com.savoirtech.logging.slf4j.json.logger.StackTest$Class3.logMe(StackTest.java:76)\\n\\tat com.savoirtech.logging.slf4j.json.logger.StackTest$Class2.logMe(StackTest.java:64)\\n\\tat com.savoirtech.logging.slf4j.json.logger.StackTest$Class1.logMe(StackTest.java:52)"));
   }
 
 }

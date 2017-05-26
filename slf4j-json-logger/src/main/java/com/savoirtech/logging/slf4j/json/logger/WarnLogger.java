@@ -21,6 +21,7 @@ package com.savoirtech.logging.slf4j.json.logger;
 import com.google.gson.Gson;
 
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.slf4j.Marker;
 
 public class WarnLogger extends AbstractJsonLogger {
 
@@ -33,6 +34,11 @@ public class WarnLogger extends AbstractJsonLogger {
   @Override
   public void log() {
     slf4jLogger.warn(formatMessage(LOG_LEVEL));
+  }
+
+  @Override
+  public void log(Marker marker) {
+    slf4jLogger.warn(marker, formatMessage(marker.getName(), LOG_LEVEL));
   }
 
   public String toString() {

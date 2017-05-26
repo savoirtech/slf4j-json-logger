@@ -19,6 +19,7 @@
 package com.savoirtech.logging.slf4j.json.logger;
 
 import com.google.gson.JsonElement;
+import org.slf4j.Marker;
 
 import java.util.List;
 import java.util.Map;
@@ -115,4 +116,6 @@ public interface JsonLogger {
    * Log the formatted message
    */
   void log();
+
+  void log(Marker marker);
 }

@@ -19,6 +19,7 @@
 package com.savoirtech.logging.slf4j.json.logger;
 
 import com.google.gson.JsonElement;
+import org.slf4j.Marker;
 
 import java.util.List;
 import java.util.Map;
@@ -86,6 +87,11 @@ public class NoopLogger implements JsonLogger {
 
   @Override
   public void log() {
+
+  }
+
+  @Override
+  public void log(Marker marker) {
 
   }
 

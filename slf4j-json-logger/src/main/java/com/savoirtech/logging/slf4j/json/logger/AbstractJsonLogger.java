@@ -25,6 +25,7 @@ import com.google.gson.JsonObject;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.MDC;
+import org.slf4j.Marker;
 
 import java.text.Format;
 import java.util.List;
@@ -190,6 +191,14 @@ public abstract class AbstractJsonLogger implements JsonLogger {
 
   @Override
   public abstract void log();
+
+  @Override
+  public abstract void log(Marker marker);
+
+  protected String formatMessage(String marker, String level) {
+    jsonObject.add("marker", gson.toJsonTree(marker));
+    return formatMessage(level);
+  }
 
   protected String formatMessage(String level) {
 
