@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -42,16 +43,37 @@ public class LoggerTest {
     this.slf4jLogger = Mockito.mock(org.slf4j.Logger.class);
     this.formatter = Mockito.mock(FastDateFormat.class);
 
-    this.logger = new Logger(slf4jLogger, formatter, true);
+    this.logger = new Logger(slf4jLogger, formatter);
+  }
+
+  @Test
+  public void testGetSetIncludeClassName() {
+    assertTrue(this.logger.isIncludeClassName());
+    this.logger.setIncludeClassName(false);
+    assertFalse(this.logger.isIncludeClassName());
+  }
+
+  @Test
+  public void testGetSetIncludeLoggerName() {
+    assertTrue(this.logger.isIncludeLoggerName());
+    this.logger.setIncludeLoggerName(false);
+    assertFalse(this.logger.isIncludeLoggerName());
+  }
+
+  @Test
+  public void testGetSetIncludeThreadName() {
+    assertTrue(this.logger.isIncludeThreadName());
+    this.logger.setIncludeThreadName(false);
+    assertFalse(this.logger.isIncludeThreadName());
   }
 
   @Test
   public void testTraceWhenEnabled() throws Exception {
     Mockito.when(this.slf4jLogger.isTraceEnabled()).thenReturn(true);
 
-    JsonLogger result = this.logger.trace();
+    this.logger.trace().message("x-trace-msg-x").log();
 
-    assertTrue(result instanceof TraceLogger);
+    Mockito.verify(this.slf4jLogger).trace(Mockito.contains("\"message\":\"x-trace-msg-x\""));
   }
 
   @Test
@@ -67,9 +89,9 @@ public class LoggerTest {
   public void testDebugWhenEnabled() throws Exception {
     Mockito.when(this.slf4jLogger.isDebugEnabled()).thenReturn(true);
 
-    JsonLogger result = this.logger.debug();
+    this.logger.debug().message("x-debug-msg-x").log();
 
-    assertTrue(result instanceof DebugLogger);
+    Mockito.verify(this.slf4jLogger).debug(Mockito.contains("\"message\":\"x-debug-msg-x\""));
   }
 
   @Test
@@ -85,9 +107,9 @@ public class LoggerTest {
   public void testInfoWhenEnabled() throws Exception {
     Mockito.when(this.slf4jLogger.isInfoEnabled()).thenReturn(true);
 
-    JsonLogger result = this.logger.info();
+    this.logger.info().message("x-info-msg-x").log();
 
-    assertTrue(result instanceof InfoLogger);
+    Mockito.verify(this.slf4jLogger).info(Mockito.contains("\"message\":\"x-info-msg-x\""));
   }
 
   @Test
@@ -103,9 +125,9 @@ public class LoggerTest {
   public void testWarnWhenEnabled() throws Exception {
     Mockito.when(this.slf4jLogger.isWarnEnabled()).thenReturn(true);
 
-    JsonLogger result = this.logger.warn();
+    this.logger.warn().message("x-warn-msg-x").log();
 
-    assertTrue(result instanceof WarnLogger);
+    Mockito.verify(this.slf4jLogger).warn(Mockito.contains("\"message\":\"x-warn-msg-x\""));
   }
 
   @Test
@@ -121,9 +143,9 @@ public class LoggerTest {
   public void testErrorWhenEnabled() throws Exception {
     Mockito.when(this.slf4jLogger.isErrorEnabled()).thenReturn(true);
 
-    JsonLogger result = this.logger.error();
+    this.logger.error().message("x-error-msg-x").log();
 
-    assertTrue(result instanceof ErrorLogger);
+    Mockito.verify(this.slf4jLogger).error(Mockito.contains("\"message\":\"x-error-msg-x\""));
   }
 
   @Test

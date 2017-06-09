@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.Map;
 
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class BasicLoggingTest {
 
@@ -59,7 +59,7 @@ public class BasicLoggingTest {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isInfoEnabled()).thenReturn(true);
 
-    Logger logger = new Logger(slf4jLogger, formatter, true);
+    Logger logger = new Logger(slf4jLogger, formatter);
 
     logger.info().message("My message").log();
 
@@ -80,7 +80,7 @@ public class BasicLoggingTest {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isDebugEnabled()).thenReturn(false);
 
-    Logger logger = new Logger(slf4jLogger, formatter, true);
+    Logger logger = new Logger(slf4jLogger, formatter);
 
     logger.info().message("My message").log();
 
@@ -98,7 +98,7 @@ public class BasicLoggingTest {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isTraceEnabled()).thenReturn(true);
 
-    Logger logger = new Logger(slf4jLogger, formatter, true);
+    Logger logger = new Logger(slf4jLogger, formatter);
 
     Map<String, String> map = new HashMap<>();
     map.put("numberSold", "0");
@@ -137,7 +137,7 @@ public class BasicLoggingTest {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isWarnEnabled()).thenReturn(true);
 
-    Logger logger = new Logger(slf4jLogger, formatter, true);
+    Logger logger = new Logger(slf4jLogger, formatter);
 
     logger.warn()
         .message("This gets overwritten")
@@ -161,7 +161,7 @@ public class BasicLoggingTest {
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isErrorEnabled()).thenReturn(true);
 
-    Logger logger = new Logger(slf4jLogger, formatter, true);
+    Logger logger = new Logger(slf4jLogger, formatter);
 
     logger.error()
         .message(() -> "Something expensive")
@@ -184,7 +184,8 @@ public class BasicLoggingTest {
     when(slf4jLogger.isInfoEnabled()).thenReturn(true);
     when(slf4jLogger.getName()).thenReturn(this.getClass().getName());
 
-    Logger logger = new Logger(slf4jLogger, formatter, true);
+    Logger logger = new Logger(slf4jLogger, formatter);
+    logger.setIncludeLoggerName(true);
     
     logger.info()
         .message("something")
@@ -208,7 +209,8 @@ public class BasicLoggingTest {
     when(slf4jLogger.isInfoEnabled()).thenReturn(true);
     when(slf4jLogger.getName()).thenReturn(this.getClass().getName());
 
-    Logger logger = new Logger(slf4jLogger, formatter, false);
+    Logger logger = new Logger(slf4jLogger, formatter);
+    logger.setIncludeLoggerName(false);
     
     logger.info()
         .message("something")
@@ -223,6 +225,6 @@ public class BasicLoggingTest {
     assert(!actualMessage.contains(expectedLoggerNameKey));
     assert(!actualMessage.contains(expectedLoggerNameValue));
   }
-  
+
 
 }

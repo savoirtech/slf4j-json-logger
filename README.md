@@ -129,7 +129,7 @@ Caution on logging numbers in JSON
 - Log monitoring/management applications like Loggly and Logstash require number fields to be actual number values in the JSON rather than String (single/double quoted) numbers.
 ````java
     logger.info()
-        .field("Number that is not a number", "1.042")
+        .field("Number that is not a number - avoid this", "1.042")
         .log();
 ````
 ````
@@ -138,7 +138,7 @@ Caution on logging numbers in JSON
 ````java
     double myDouble = 10.0/3.0;
     logger.info()
-        .field("Some timing metric", myDouble)
+        .field("Some timing metric - do this instead", myDouble)
         .log();
 ````
 ````
@@ -155,4 +155,19 @@ bundle:install -s mvn:com.savoirtech.logging/slf4j-json-logger/2.0.1
 ````
 feature:repo-add mvn:com.savoirtech.logging/osgi-features/2.0.1/xml/features
 feature:install slf4j-json-logger-all
+````
+
+
+Markers
+===========
+Support for markers was added with a pull request by Boris Smidt (many thanks!).
+````java
+    logger.info()
+        .marker(MarkerFactory.getMarker("PERF"))
+        .message("start() call duration")
+        .field("duration", elapsedMs)
+        .log();
+````
+````
+{"marker":"PERF","message":"start() call duration","duration":351,"level":"INFO", ...}
 ````
