@@ -35,7 +35,7 @@ public class Logger {
 
   private org.slf4j.Logger slf4jLogger;
 
-  private Gson gson = new GsonBuilder().disableHtmlEscaping().serializeNulls().create();
+  private Gson gson;
   private FastDateFormat formatter;
   private boolean includeLoggerName = true;
   private boolean includeThreadName = true ;
@@ -44,6 +44,11 @@ public class Logger {
   private NoopLogger noopLogger = new NoopLogger();
 
   public Logger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter) {
+    this(slf4jLogger, formatter, new GsonBuilder().disableHtmlEscaping().serializeNulls().create());
+  }
+
+  public Logger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter, Gson gson) {
+    this.gson = gson;
     this.slf4jLogger = slf4jLogger;
     this.formatter = formatter;
   }
