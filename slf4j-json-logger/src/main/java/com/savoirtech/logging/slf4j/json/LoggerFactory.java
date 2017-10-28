@@ -18,21 +18,28 @@
 
 package com.savoirtech.logging.slf4j.json;
 
+import com.savoirtech.logging.slf4j.json.config.DefaultJsonLoggingConfigurer;
+import com.savoirtech.logging.slf4j.json.config.JsonLoggingConfigurer;
 import com.savoirtech.logging.slf4j.json.logger.Logger;
 
 import org.apache.commons.lang3.time.FastDateFormat;
+
+import java.util.function.Supplier;
 
 public class LoggerFactory {
   private static String dateFormatString = "yyyy-MM-dd HH:mm:ss.SSSZ";
   private static FastDateFormat formatter = FastDateFormat.getInstance(dateFormatString);
   private static boolean includeLoggerName = true;
   private static boolean includeThreadName = true;
-  private static boolean includeClassName = true; 
+  private static boolean includeClassName = true;
+
+  private static Supplier<JsonLoggingConfigurer> configurerSupplier = new PrivateConfigurerSupplier();
 
 //========================================
 // Static Getters and Setters
 //----------------------------------------
 
+  // TBD999: remove these?
   public static void setDateFormatString(String dateFormatString) {
     LoggerFactory.dateFormatString = dateFormatString;
     LoggerFactory.formatter = FastDateFormat.getInstance(dateFormatString);
@@ -61,6 +68,7 @@ public class LoggerFactory {
   public static boolean isIncludeClassName() {
     return includeClassName;
   }
+
 //========================================
 // Factory API
 //----------------------------------------
@@ -86,8 +94,32 @@ public class LoggerFactory {
 //----------------------------------------
 
   private static void configureLogger(Logger logger) {
-    logger.setIncludeClassName(includeClassName);
-    logger.setIncludeLoggerName(includeLoggerName);
-    logger.setIncludeThreadName(includeThreadName);
+    JsonLoggingConfigurer configurer = configurerSupplier.get();
+
+    logger.applySettings(configurer.getSettings());
+  }
+
+  private static class PrivateConfigurerSupplier implements Supplier<JsonLoggingConfigurer> {
+    private static final Object configurationLock = new Object();
+    private static boolean configurationComplete = false;
+
+    private JsonLoggingConfigurer configurer = new DefaultJsonLoggingConfigurer();
+
+    @Override
+    public JsonLoggingConfigurer get() {
+      //
+      // Critical section to ensure init() of configurer only happens once.
+      //
+      synchronized (configurationLock) {
+        if (configurationComplete) {
+          return configurer;
+        }
+
+        configurer.init();
+        configurationComplete = true;
+
+        return configurer;
+      }
+    }
   }
 }

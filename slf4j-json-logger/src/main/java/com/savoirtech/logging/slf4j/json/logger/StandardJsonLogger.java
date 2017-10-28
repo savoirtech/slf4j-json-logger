@@ -22,6 +22,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import com.savoirtech.logging.slf4j.json.config.model.JsonLoggerSettings;
+import com.savoirtech.logging.slf4j.json.logger.formatting.LogMessageBodyFormatter;
+import com.savoirtech.logging.slf4j.json.logger.formatting.impl.JsonLogMessageBodyFormatter;
+import com.savoirtech.logging.slf4j.json.logger.formatting.impl.KeyValuePlainTextLogMessageBodyFormatter;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.MDC;
@@ -47,9 +52,10 @@ public class StandardJsonLogger implements JsonLogger {
 
   private Marker marker;
 
-  private boolean includeLoggerName = true;
-  private boolean includeThreadName = true ;
-  private boolean includeClassName = true ;
+  private JsonLoggerSettings settings;
+
+  private LogMessageBodyFormatter jsonLogMessageBodyFormatter;
+  private LogMessageBodyFormatter plainTextLogMessageBodyFormatter;
 
   public StandardJsonLogger(org.slf4j.Logger slf4jLogger,
                             FastDateFormat formatter, Gson gson,
@@ -65,34 +71,20 @@ public class StandardJsonLogger implements JsonLogger {
     this.logWithMarkerOperation = logWithMarkerOperation;
 
     this.jsonObject = new JsonObject();
+
+    this.settings = new JsonLoggerSettings();
+    this.settings.setToDefaults();
+
+    this.jsonLogMessageBodyFormatter = new JsonLogMessageBodyFormatter(this.gson);
+    this.plainTextLogMessageBodyFormatter = new KeyValuePlainTextLogMessageBodyFormatter();
   }
 
 //========================================
 // Getters and Setters
 //----------------------------------------
 
-  public boolean isIncludeLoggerName() {
-    return includeLoggerName;
-  }
-
-  public void setIncludeLoggerName(boolean includeLoggerName) {
-    this.includeLoggerName = includeLoggerName;
-  }
-
-  public boolean isIncludeThreadName() {
-    return includeThreadName;
-  }
-
-  public void setIncludeThreadName(boolean includeThreadName) {
-    this.includeThreadName = includeThreadName;
-  }
-
-  public boolean isIncludeClassName() {
-    return includeClassName;
-  }
-
-  public void setIncludeClassName(boolean includeClassName) {
-    this.includeClassName = includeClassName;
+  public void applySettings(JsonLoggerSettings other) {
+    this.settings.apply(other);
   }
 
 //========================================
@@ -261,49 +253,70 @@ public class StandardJsonLogger implements JsonLogger {
 //----------------------------------------
 
   protected String formatMessage(String level) {
+    if (! this.settings.plainTextOverrideMode) {
+      // Log in JSON format
+      return this.formatMessageBody(level, this.jsonLogMessageBodyFormatter);
+    } else {
+      // Log in plain text format
+      return this.formatMessageBody(level, this.plainTextLogMessageBodyFormatter);
+    }
+  }
+
+  protected String formatMessageBody(String level, LogMessageBodyFormatter bodyFormatter) {
 
     jsonObject.add("level", gson.toJsonTree(level));
 
-    if (includeThreadName) {
-        jsonObject.add("thread_name", gson.toJsonTree(Thread.currentThread().getName()));
+    if (this.settings.includeThreadName) {
+        jsonObject.add(this.settings.threadFieldName, gson.toJsonTree(Thread.currentThread().getName()));
     }
 
-    if (includeClassName) {
+    if (this.settings.includeClassName) {
         try {
-          jsonObject.add("class", gson.toJsonTree(getCallingClass()));
+          jsonObject.add(this.settings.classFieldName, gson.toJsonTree(getCallingClass()));
         }
         catch (Exception e) {
-          jsonObject.add("class", gson.toJsonTree(formatException(e)));
+          jsonObject.add(this.settings.classFieldName, gson.toJsonTree(formatException(e)));
         }
     }
 
-    if (includeLoggerName) {
-      jsonObject.add("logger_name", gson.toJsonTree(slf4jLogger.getName()));
+    if (this.settings.includeLoggerName) {
+      jsonObject.add(this.settings.loggerFieldName, gson.toJsonTree(slf4jLogger.getName()));
     }
 
     try {
-      jsonObject.add("@timestamp", gson.toJsonTree(getCurrentTimestamp(formatter)));
+      jsonObject.add(this.settings.timestampFieldName, gson.toJsonTree(getCurrentTimestamp(formatter)));
     }
     catch (Exception e) {
-      jsonObject.add("@timestamp", gson.toJsonTree(formatException(e)));
+      jsonObject.add(this.settings.timestampFieldName, gson.toJsonTree(formatException(e)));
     }
 
     Map mdc = MDC.getCopyOfContextMap();
     if (mdc != null && !mdc.isEmpty()) {
       try {
-        jsonObject.add("mdc", gson.toJsonTree(mdc));
+        jsonObject.add(this.settings.mdcFieldName, gson.toJsonTree(mdc));
       }
       catch (Exception e) {
-        jsonObject.add("mdc", gson.toJsonTree(formatException(e)));
+        jsonObject.add(this.settings.mdcFieldName, gson.toJsonTree(formatException(e)));
       }
     }
 
-    return gson.toJson(jsonObject);
+    return bodyFormatter.format(this.jsonObject);
   }
 
   private String getCallingClass() {
     StackTraceElement[] stackTraceElements = (new Exception()).getStackTrace();
-    return stackTraceElements[3].getClassName();
+
+    // Find the first class name that's not this class, in a way that's not fragile in case this
+    //  class is modified.
+    String thisClassName = this.getClass().getName();
+    for (StackTraceElement oneEle : stackTraceElements) {
+      String className = oneEle.getClassName();
+      if (! className.equals(thisClassName)) {
+        return className;
+      }
+    }
+
+    return "unknown";
   }
 
   private String getCurrentTimestamp(Format formatter) {

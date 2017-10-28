@@ -42,6 +42,8 @@
         <module>slf4j-json-logger</module>
         <module>slf4j-json-logger-mockito</module>
         <module>features</module>
+        <module>slf4j-json-logger-config</module>
+        <module>integration-test</module>
     </modules>
 
     <scm>
@@ -89,6 +91,11 @@
             <dependency>
                 <groupId>com.savoirtech.logging</groupId>
                 <artifactId>slf4j-json-logger</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.savoirtech.logging</groupId>
+                <artifactId>slf4j-json-logger-config</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

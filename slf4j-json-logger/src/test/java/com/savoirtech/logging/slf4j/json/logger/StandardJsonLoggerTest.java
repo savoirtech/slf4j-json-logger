@@ -72,26 +72,26 @@ public class StandardJsonLoggerTest {
     MDC.clear();
   }
 
-  @Test
-  public void testGetSetIncludeClassName() {
-    assertTrue(logger.isIncludeClassName());
-    logger.setIncludeClassName(false);
-    assertFalse(logger.isIncludeClassName());
-  }
-
-  @Test
-  public void testGetSetIncludeThreadName() {
-    assertTrue(logger.isIncludeThreadName());
-    logger.setIncludeThreadName(false);
-    assertFalse(logger.isIncludeThreadName());
-  }
-
-  @Test
-  public void testGetSetIncludeLoggerName() {
-    assertTrue(logger.isIncludeLoggerName());
-    logger.setIncludeLoggerName(false);
-    assertFalse(logger.isIncludeLoggerName());
-  }
+//  @Test
+//  public void testGetSetIncludeClassName() {
+//    assertTrue(logger.isIncludeClassName());
+//    logger.setIncludeClassName(false);
+//    assertFalse(logger.isIncludeClassName());
+//  }
+//
+//  @Test
+//  public void testGetSetIncludeThreadName() {
+//    assertTrue(logger.isIncludeThreadName());
+//    logger.setIncludeThreadName(false);
+//    assertFalse(logger.isIncludeThreadName());
+//  }
+//
+//  @Test
+//  public void testGetSetIncludeLoggerName() {
+//    assertTrue(logger.isIncludeLoggerName());
+//    logger.setIncludeLoggerName(false);
+//    assertFalse(logger.isIncludeLoggerName());
+//  }
 
   @Test
   public void message() {

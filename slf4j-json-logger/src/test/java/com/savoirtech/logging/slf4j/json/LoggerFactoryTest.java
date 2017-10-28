@@ -109,17 +109,17 @@ public class LoggerFactoryTest {
     assertEquals("HH:MM", formatter.getPattern());
   }
 
-  @Test
-  public void testSetIncludeLoggerName() {
-    LoggerFactory.setIncludeLoggerName(false);
-    Logger result = LoggerFactory.getLogger(this.getClass());
-
-    boolean includeLoggerName = (boolean) Whitebox.getInternalState(result, "includeLoggerName");
-    assertFalse(includeLoggerName);
-
-    JsonLogger jsonLogger = result.info().message("A message");
-    includeLoggerName = (boolean) Whitebox.getInternalState(jsonLogger, "includeLoggerName");
-
-    assertFalse(includeLoggerName);
-  }
+//  @Test
+//  public void testSetIncludeLoggerName() {
+//    LoggerFactory.setIncludeLoggerName(false);
+//    Logger result = LoggerFactory.getLogger(this.getClass());
+//
+//    boolean includeLoggerName = (boolean) Whitebox.getInternalState(result, "includeLoggerName");
+//    assertFalse(includeLoggerName);
+//
+//    JsonLogger jsonLogger = result.info().message("A message");
+//    includeLoggerName = (boolean) Whitebox.getInternalState(jsonLogger, "includeLoggerName");
+//
+//    assertFalse(includeLoggerName);
+//  }
 }

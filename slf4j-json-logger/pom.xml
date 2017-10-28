@@ -58,6 +58,11 @@
   <dependencies>
 
     <dependency>
+      <groupId>com.savoirtech.logging</groupId>
+      <artifactId>slf4j-json-logger-config</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
     </dependency>

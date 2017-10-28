@@ -21,6 +21,7 @@ package com.savoirtech.logging.slf4j.json.logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import com.savoirtech.logging.slf4j.json.config.model.JsonLoggerSettings;
 import org.apache.commons.lang3.time.FastDateFormat;
 
 /**
@@ -37,15 +38,17 @@ public class Logger {
 
   private Gson gson = new GsonBuilder().disableHtmlEscaping().serializeNulls().create();
   private FastDateFormat formatter;
-  private boolean includeLoggerName = true;
-  private boolean includeThreadName = true ;
-  private boolean includeClassName = true ; 
+
+  private JsonLoggerSettings settings;
 
   private NoopLogger noopLogger = new NoopLogger();
 
   public Logger(org.slf4j.Logger slf4jLogger, FastDateFormat formatter) {
     this.slf4jLogger = slf4jLogger;
     this.formatter = formatter;
+
+    this.settings = new JsonLoggerSettings();
+    this.settings.setToDefaults();
   }
 
 //========================================
@@ -53,27 +56,31 @@ public class Logger {
 //----------------------------------------
 
   public boolean isIncludeLoggerName() {
-    return includeLoggerName;
+    return this.settings.includeLoggerName;
   }
 
   public void setIncludeLoggerName(boolean includeLoggerName) {
-    this.includeLoggerName = includeLoggerName;
+    this.settings.includeLoggerName = includeLoggerName;
   }
 
   public boolean isIncludeThreadName() {
-    return includeThreadName;
+    return this.settings.includeThreadName;
   }
 
   public void setIncludeThreadName(boolean includeThreadName) {
-    this.includeThreadName = includeThreadName;
+    this.settings.includeThreadName = includeThreadName;
   }
 
   public boolean isIncludeClassName() {
-    return includeClassName;
+    return this.settings.includeClassName;
   }
 
   public void setIncludeClassName(boolean includeClassName) {
-    this.includeClassName = includeClassName;
+    this.settings.includeClassName = includeClassName;
+  }
+
+  public void applySettings(JsonLoggerSettings other) {
+    this.settings.apply(other);
   }
 
 //========================================
@@ -86,7 +93,7 @@ public class Logger {
           result =
           new StandardJsonLogger(this.slf4jLogger, this.formatter, this.gson, TRACE_LEVEL_NAME,
                                  this.slf4jLogger::trace, this.slf4jLogger::trace);
-      this.configureLogger(result);
+      this.configureJsonLogger(result);
       return result;
     }
 
@@ -99,7 +106,7 @@ public class Logger {
           result =
           new StandardJsonLogger(this.slf4jLogger, this.formatter, this.gson, DEBUG_LEVEL_NAME,
                                  this.slf4jLogger::debug, this.slf4jLogger::debug);
-      this.configureLogger(result);
+      this.configureJsonLogger(result);
       return result;
     }
 
@@ -112,7 +119,7 @@ public class Logger {
           result =
           new StandardJsonLogger(this.slf4jLogger, this.formatter, this.gson, INFO_LEVEL_NAME,
                                  this.slf4jLogger::info, this.slf4jLogger::info);
-      this.configureLogger(result);
+      this.configureJsonLogger(result);
       return result;
     }
 
@@ -125,7 +132,7 @@ public class Logger {
           result =
           new StandardJsonLogger(this.slf4jLogger, this.formatter, this.gson, WARN_LEVEL_NAME,
                                  this.slf4jLogger::warn, this.slf4jLogger::warn);
-      this.configureLogger(result);
+      this.configureJsonLogger(result);
       return result;
     }
 
@@ -138,7 +145,7 @@ public class Logger {
           result =
           new StandardJsonLogger(this.slf4jLogger, this.formatter, this.gson, ERROR_LEVEL_NAME,
                                  this.slf4jLogger::error, this.slf4jLogger::error);
-      this.configureLogger(result);
+      this.configureJsonLogger(result);
       return result;
     }
 
@@ -149,9 +156,7 @@ public class Logger {
 // Internal Methods
 //----------------------------------------
 
-  private void configureLogger(StandardJsonLogger logger) {
-    logger.setIncludeClassName(this.includeClassName);
-    logger.setIncludeLoggerName(this.includeLoggerName);
-    logger.setIncludeThreadName(this.includeThreadName);
+  private void configureJsonLogger(StandardJsonLogger jsonLogger) {
+    jsonLogger.applySettings(this.settings);
   }
 }
