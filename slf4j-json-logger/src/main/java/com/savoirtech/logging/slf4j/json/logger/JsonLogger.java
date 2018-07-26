@@ -84,7 +84,7 @@ public interface JsonLogger {
    * Add an exception to the JSON hierarchy.  The exception will be formatted to include the message and the stacktrace
    * similar to how it is outputted using exception.printStackTrace()
    */
-  JsonLogger exception(String key, Exception exception);
+  JsonLogger exception(String key, Throwable exception);
 
   /**
    * Include the stack dump of the current running thread in the log output.

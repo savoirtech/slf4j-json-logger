@@ -216,7 +216,7 @@ public class StandardJsonLogger implements JsonLogger {
   }
 
   @Override
-  public JsonLogger exception(String key, Exception exception) {
+  public JsonLogger exception(String key, Throwable exception) {
     try {
       jsonObject.add(key, gson.toJsonTree(formatException(exception)));
     }
@@ -310,7 +310,7 @@ public class StandardJsonLogger implements JsonLogger {
     return formatter.format(System.currentTimeMillis());
   }
 
-  private String formatException(Exception e) {
+  private String formatException(Throwable e) {
     return ExceptionUtils.getStackTrace(e);
   }
 
