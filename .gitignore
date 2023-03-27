@@ -5,6 +5,7 @@
 # Maven Files
 pom.xml.versionsBackup
 target
+.mvn
 
 # Eclipse Files
 .settings

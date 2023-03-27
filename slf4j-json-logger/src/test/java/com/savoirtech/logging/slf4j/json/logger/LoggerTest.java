@@ -73,7 +73,7 @@ public class LoggerTest {
 
     this.logger.trace().message("x-trace-msg-x").log();
 
-    Mockito.verify(this.slf4jLogger).trace(Mockito.contains("\"message\":\"x-trace-msg-x\""));
+    Mockito.verify(this.slf4jLogger).trace(Mockito.contains("\"msg\":\"x-trace-msg-x\""));
   }
 
   @Test
@@ -91,7 +91,7 @@ public class LoggerTest {
 
     this.logger.debug().message("x-debug-msg-x").log();
 
-    Mockito.verify(this.slf4jLogger).debug(Mockito.contains("\"message\":\"x-debug-msg-x\""));
+    Mockito.verify(this.slf4jLogger).debug(Mockito.contains("\"msg\":\"x-debug-msg-x\""));
   }
 
   @Test
@@ -109,7 +109,7 @@ public class LoggerTest {
 
     this.logger.info().message("x-info-msg-x").log();
 
-    Mockito.verify(this.slf4jLogger).info(Mockito.contains("\"message\":\"x-info-msg-x\""));
+    Mockito.verify(this.slf4jLogger).info(Mockito.contains("\"msg\":\"x-info-msg-x\""));
   }
 
   @Test
@@ -127,7 +127,7 @@ public class LoggerTest {
 
     this.logger.warn().message("x-warn-msg-x").log();
 
-    Mockito.verify(this.slf4jLogger).warn(Mockito.contains("\"message\":\"x-warn-msg-x\""));
+    Mockito.verify(this.slf4jLogger).warn(Mockito.contains("\"msg\":\"x-warn-msg-x\""));
   }
 
   @Test
@@ -145,7 +145,7 @@ public class LoggerTest {
 
     this.logger.error().message("x-error-msg-x").log();
 
-    Mockito.verify(this.slf4jLogger).error(Mockito.contains("\"message\":\"x-error-msg-x\""));
+    Mockito.verify(this.slf4jLogger).error(Mockito.contains("\"msg\":\"x-error-msg-x\""));
   }
 
   @Test

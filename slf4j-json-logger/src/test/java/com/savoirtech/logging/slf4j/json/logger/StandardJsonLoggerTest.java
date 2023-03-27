@@ -96,13 +96,13 @@ public class StandardJsonLoggerTest {
   @Test
   public void message() {
     logger.message("message").log();
-    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"message\":\"message\""));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"msg\":\"message\""));
   }
 
   @Test
   public void messageSupplier() {
     logger.message(() -> "message").log();
-    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"message\":\"message\""));
+    Mockito.verify(this.messageConsumer).accept(Mockito.contains("\"msg\":\"message\""));
   }
 
   @Test

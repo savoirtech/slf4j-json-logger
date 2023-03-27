@@ -54,7 +54,7 @@ public class BasicLoggingTest {
   @Test
   public void messageEnabled() {
     String expectedLevelElement = "\"level\":\"INFO\"";
-    String expectedMessageElement = "\"message\":\"My message\"";
+    String expectedMessageElement = "\"msg\":\"My message\"";
 
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isInfoEnabled()).thenReturn(true);
@@ -90,7 +90,7 @@ public class BasicLoggingTest {
   @Test
   public void allCollections() {
     String expectedLevelElement = "\"level\":\"TRACE\"";
-    String expectedMessageElement = "\"message\":\"Report executed\"";
+    String expectedMessageElement = "\"msg\":\"Report executed\"";
     String expectedMapElement = "\"someStats\":{\"numberSold\":\"0\"}";
     String expectedListElement = "\"customers\":[\"Acme\",\"Sun\"]";
     String expectedFieldElement = "\"year\":\"2016\"";
@@ -131,8 +131,8 @@ public class BasicLoggingTest {
 
   @Test
   public void fieldOverwritesCategory() {
-    String unexpectedMessageElement = "\"message\":\"This gets overwritten\"";
-    String expectedMessageElement = "\"message\":\"This wins\"";
+    String unexpectedMessageElement = "\"msg\":\"This gets overwritten\"";
+    String expectedMessageElement = "\"msg\":\"This wins\"";
 
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isWarnEnabled()).thenReturn(true);
@@ -141,7 +141,7 @@ public class BasicLoggingTest {
 
     logger.warn()
         .message("This gets overwritten")
-        .field("message", "This wins")
+        .field("msg", "This wins")
         .log();
 
     ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
@@ -156,7 +156,7 @@ public class BasicLoggingTest {
 
   @Test
   public void lambdas() {
-    String expectedCategoryElement = "\"message\":\"Something expensive\"";
+    String expectedCategoryElement = "\"msg\":\"Something expensive\"";
 
     org.slf4j.Logger slf4jLogger = mock(org.slf4j.Logger.class);
     when(slf4jLogger.isErrorEnabled()).thenReturn(true);

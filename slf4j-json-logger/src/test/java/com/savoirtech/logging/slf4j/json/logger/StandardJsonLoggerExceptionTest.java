@@ -76,13 +76,13 @@ public class StandardJsonLoggerExceptionTest {
   @Test
   public void message() {
     logger.message("message").log();
-    assert(logMessage.contains("\"message\":\"java.lang.RuntimeException: x-rt-exc-x"));
+    assert(logMessage.contains("\"msg\":\"java.lang.RuntimeException: x-rt-exc-x"));
   }
 
   @Test
   public void messageSupplier() {
     logger.message(() -> {throw new RuntimeException("Some error!");}).log();
-    assert(logMessage.contains("\"message\":\"java.lang.RuntimeException: Some error!"));
+    assert(logMessage.contains("\"msg\":\"java.lang.RuntimeException: Some error!"));
   }
 
   @Test

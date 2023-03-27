@@ -102,10 +102,10 @@ public class StandardJsonLogger implements JsonLogger {
   @Override
   public JsonLogger message(String message) {
     try {
-      jsonObject.add("message", gson.toJsonTree(message));
+      jsonObject.add("msg", gson.toJsonTree(message));
     }
     catch (Exception e) {
-      jsonObject.add("message", gson.toJsonTree(formatException(e)));
+      jsonObject.add("msg", gson.toJsonTree(formatException(e)));
     }
     return this;
   }
@@ -113,10 +113,10 @@ public class StandardJsonLogger implements JsonLogger {
   @Override
   public JsonLogger message(Supplier<String> message) {
     try {
-      jsonObject.add("message", gson.toJsonTree(message.get()));
+      jsonObject.add("msg", gson.toJsonTree(message.get()));
     }
     catch (Exception e) {
-      jsonObject.add("message", gson.toJsonTree(formatException(e)));
+      jsonObject.add("msg", gson.toJsonTree(formatException(e)));
     }
     return this;
   }
